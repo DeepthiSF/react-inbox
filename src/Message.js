@@ -45,12 +45,6 @@ import React from 'react';
 
 const Message = (props) => {
 
-//    const markRead = () => {
-//         setState({
-//              props.data.read: true,
-//         })
-//     }
-
     return (
         <ul>
             <div className=
@@ -58,22 +52,25 @@ const Message = (props) => {
                 props.data.read ?
                     ("row message read")
                     : ("row message unread")
-                }
-                >
+                }>
                 
                 <div className="col-xs-1">
                   <div className="row">
                         <div className="col-xs-2">
-                         <input type="checkbox" />
+                         <input type="checkbox" 
+                         checked={props.data.selected? "checked":""}/>
                         </div>
                         <div className="col-xs-2">
-                         <i className="star fa fa-star-o"></i>
+                         <i className={props.data.starred? "star fa fa-star":"star fa fa-star-o"}></i>
                         </div>
                   </div>
                 </div>
             <div className="col-xs-11">
-                
-                    {props.data.subject}
+                {(props.data.labels).map((label,index) => {
+                    return <span class="label label-warning">label</span>
+                })}
+               
+                {props.data.subject}
                
             </div>
         </div>
