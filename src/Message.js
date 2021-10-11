@@ -4,9 +4,9 @@ class Message extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // read: false,
-            // selected: false,
-            starred: this.props.data.starred,
+             read: this.props.data.read,
+             selected: this.props.data.selected,
+             starred: this.props.data.starred,
 
         }
     }
@@ -20,10 +20,22 @@ class Message extends React.Component {
     handleStarred = ()=> {
         // console.log("starred")
         this.setState({
-            starred: !this.state.starred
+            starred: !this.state.starred,
                      
         })
     }
+
+    handleSelected = () => {
+        this.setState({
+            selected: !this.state.selected,
+        })
+    }
+
+    // const handleClassNames = () => {
+    //     if(this.state.selected && this.state.){
+    //         return 
+    //     }
+    //  }
 
     render() {
         return (
@@ -38,7 +50,7 @@ class Message extends React.Component {
                    <div className="row">
                          <div className="col-xs-2">
                           <input type="checkbox" 
-                         checked={this.props.data.selected? "checked":""}/>
+                         checked={this.props.data.selected? "checked":""} onClick={this.handleSelected}/>
                          </div>
                          <div className="col-xs-2">
                          <i className={this.state.starred? "star fa fa-star":"star fa fa-star-o"} onClick={this.handleStarred}></i>
