@@ -3,27 +3,32 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #f8f9fb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 
 .message {
+  color: black;
   margin-left: 0px;
   padding-top: 8px;
   padding-bottom: 8px;
   cursor: pointer;
   border-bottom: 1px solid #efefef;
+  font-style: normal;
+  font-weight: lighter;
+ 
 }
 
 .message a {
   color: black;
+  font-style: italic;
 }
 
 .message a:hover, .message a:active, .message a:focus {
@@ -87,4 +92,8 @@ footer.spacer {
 
 .fa-close {
   cursor: pointer;
+}
+
+.badge {
+  color:black;
 }

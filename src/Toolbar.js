@@ -5,7 +5,7 @@ const Toolbar = () => {
         <div class="row toolbar">
             <div class="col-md-12">
                 <p class="pull-right">
-                    <span class="badge badge">2</span>
+                    <span class="badge badge" className='badge'>2</span>
                     unread messages
                 </p>
 

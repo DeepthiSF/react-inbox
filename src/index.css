@@ -13,6 +13,7 @@ code {
 }
 
 .message {
+  color: black;
   margin-left: 0px;
   padding-top: 8px;
   padding-bottom: 8px;
