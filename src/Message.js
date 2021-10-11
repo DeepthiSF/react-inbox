@@ -47,7 +47,7 @@ class Message extends React.Component {
                  </div>
              <div className="col-xs-11">
                  {(this.props.data.labels).map((label,index) => {
-                     return <span class="label label-warning">label</span>
+                     return <span class="label label-warning">{label}</span>
                  })}
                
                  {this.props.data.subject}
