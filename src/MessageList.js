@@ -6,7 +6,7 @@ import messages from './MessageData';
 const MessageList = () => {
 
     const messageList = messages.map((message, index, messages) => {
-        return <Message data={message} />
+        return <Message key={index} data={message} />
     })
 
     return (
