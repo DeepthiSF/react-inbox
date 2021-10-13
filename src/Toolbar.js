@@ -31,6 +31,16 @@ class Toolbar extends React.Component {
         })      
     }
 
+    handleSelectAll = () => {
+        let newMessages = this.state.messages.slice();
+        newMessages = newMessages.map((message) => {
+            return {...message, selected: true}
+        })
+        this.setState({
+            messages: newMessages
+        })
+    }
+
         
     // handleRead = () => {
     //     // selectAllMessages = messages.map((message, index) => {
@@ -56,7 +66,7 @@ class Toolbar extends React.Component {
                 </p>
 
                 <button class="btn btn-default">
-                    <i class="fa fa-check-square-o"></i>
+                    <i class="fa fa-check-square-o" onClick = {this.handleSelectAll}></i>
                 </button>
 
                 <button class="btn btn-default">
