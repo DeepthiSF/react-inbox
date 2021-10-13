@@ -1,33 +1,49 @@
 import React from 'react';
-import { messages } from './MessageList';
+import MessageList from './MessageList';
+import messages from './MessageData';
 
-const Toolbar = () => {
+class Toolbar extends React.Component {
 
-    // const handleRead = () => {
+    constructor(){
+        super()
+        this.state = {
+            messages : messages,
+        }
+    }
+
+    handleStarred = (e) => {
+        let id = e.target.id
+        console.log(id)
+        let newMessages = this.state.messages.slice();
+        newMessages[id].starred = !newMessages[id].starred
+        this.setState({
+            messages: newMessages
+        })
+    }
+
+    // handleSelected = (i) => {
+    //     this.setState({
+    //         selected: !this.state.selected
+    //     })      
+    // }
+
+        
+    // handleRead = () => {
+    //     // selectAllMessages = messages.map((message, index) => {
+    //     //     return setState({this.state.message = true});
+    //     // })
     //     return (
-    //         // if(messages.)
-    //         <div class="row message read">
-    //             <div class="col-xs-1">
-    //                 <div class="row">
-    //                     <div class="col-xs-2">
-    //                         <input type="checkbox" />
-    //                     </div>
-    //                     <div class="col-xs-2">
-    //                         <i class="star fa fa-star-o"></i>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //             {/* <div class="col-xs-11">
-    //                 <a href="#">
-    //                     Here is some message text that has a bunch of stuff
-    //                 </a>
-    //             </div> */}
-    //         </div>
+            
+    //         this.state.messages.map((message,index) => {
+    //             this.setState({message.selected = true})
+    //         })
+            
     //     )
 
     // }
 
-    return (
+    render() {
+      return (
         <div class="row toolbar">
             <div class="col-md-12">
                 <p class="pull-right">
@@ -39,7 +55,7 @@ const Toolbar = () => {
                     <i class="fa fa-check-square-o"></i>
                 </button>
 
-                <button class="btn btn-default" >
+                <button class="btn btn-default">
                     Mark As Read
                 </button>
 
@@ -65,8 +81,18 @@ const Toolbar = () => {
                     <i class="fa fa-trash-o"></i>
                 </button>
             </div>
+            
+            <div>
+                <MessageList
+                     messages={this.state.messages}
+                     handleStarred={this.handleStarred}
+                    //  handleSelected={this.handleSelected}        
+                />
+            </div>
         </div>
+        
     )
+}
 }
 
 export default Toolbar;

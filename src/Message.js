@@ -1,112 +1,69 @@
 import React from 'react';
 
-class Message extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            read: this.props.data.read,
-            selected: this.props.data.selected,
-            starred: this.props.data.starred,
-        }
-    }
-
-    dynamicClass = "row message"
-
-    dynamicClassName = () => {
-        this.dynamicClass = "row message"
-        if (this.state.selected === true && this.state.read === true) {
-            this.dynamicClass += " read selected";
-        } else if (this.state.selected === true && this.state.read === false) {
-            this.dynamicClass += " unread selected";
-        } else if (this.state.read === true) {
-            this.dynamicClass += " read"
-        } else {
-            this.dynamicClass += " unread"
-        }
-        return this.dynamicClass;
-    }
-
-
-    // handleRead = () => {
-    //     this.setState({
-    //         read: true,
-    //     });
+const Message = (props) => {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         read: this.props.data.read,
+    //         selected: this.props.data.selected,
+    //         starred: this.props.data.starred,
+    //     }
     // }
 
-    handleStarred = () => {
-        
-        this.setState({
-            starred: !this.state.starred,
+    let dynamicClass = "row message"
 
-        })
+    const dynamicClassName = () => {
+          let dynamicClass = "row message"
+        if (props.data.selected === true && props.data.read === true) {
+           dynamicClass += " read selected";
+        } else if (props.data.selected === true && props.data.read === false) {
+            dynamicClass += " unread selected";
+        } else if (props.data.read === true) {
+            dynamicClass += " read"
+        } else {
+            dynamicClass += " unread"
+        }
+        return dynamicClass;
     }
 
-    handleSelected = () => {
-        // this.setState({
-        //     selected: true,
-        //     read: true,
-        // })
-        // if(this.state.selected === true && this.state.read === true){
-        //     this.dynamicClassName += " read selected";
-        //     this.state.selected = true;
-        // } else if(this.state.selected === true && this.state.read === false) {
-        //     this.dynamicClassName += " unread selected";
-        //     this.state.selected = false;
-        // }
-        console.log("selected")
-        // if (this.state.read === true) {
-        //     this.dynamicClassName += " read"
-        //     this.setState({
-        //         read: true
-        //     })
-        // } else {
-        //     this.dynamicClassName += " unread"
-        // }
-        // if (this.state.selected === true) {
-        //     this.dynamicClass += " selected"
-        this.setState({
-            selected: !this.state.selected
-        })
-        
-    }
     
-
-
-render() {
     return (
         <ul>
             <div
-                className={this.dynamicClassName()}
+                className={dynamicClassName()}
+                // className={this.props.dynamicClassName()}
             >
-                {/* className={
-                         this.props.data.read ?
-                             ("row message read")
-                             : ("row message unread")
-                     }> */}
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">
                             <input type="checkbox"
-                                checked={this.state.selected? "checked":""} onChange={this.handleSelected}/>
-                                {/* defaultChecked={this.state.selected ? true : false} onClick={this.handleSelected} /> */}
+                                // checked={props.data.selected? "checked":""} onChange={this.handleSelected}/>
+                                checked={props.data.selected? "checked":""} />
+                                 {/* checked={this.state.selected? "checked":""} onChange={this.props.handleSelected}/> */}
                         </div>
                         <div className="col-xs-2">
-                            <i className={this.state.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={this.handleStarred}></i>
+                            <i id={props.index} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.handleStarred}></i>
+                            {/* <i  className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} ></i> */}
+                            {/* <i className={this.state.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={this.props.handleStarred}></i> */}
                         </div>
                     </div>
                 </div>
                 <div className="col-xs-11">
-                    {(this.props.data.labels).map((label, index) => {
+                    {(props.data.labels).map((label, index) => {
                         return <span class="label label-warning">{label}</span>
                     })}
-
-                    {this.props.data.subject}
+                    {/* {(this.props.labels).map((label, index) => {
+                        return <span class="label label-warning">{label}</span>
+                    })} */}
+                    <a href="#">
+                    {props.data.subject}
+                    </a>
 
                 </div>
             </div>
         </ul >
     )
-}
+
 
 }
 
