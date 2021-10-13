@@ -114,6 +114,23 @@ class Toolbar extends React.Component {
         })
     }
 
+    handleUnRead = () => {
+        
+        let newMessages = this.state.messages.slice();
+
+        newMessages = newMessages.map((message) => {
+            if(message.selected === true){
+                return {...message, read: false}
+            } else{
+                return {...message}
+            }
+        })
+
+        this.setState({
+            messages: newMessages
+        })
+    }
+
     render() {
        
         return (
@@ -132,7 +149,7 @@ class Toolbar extends React.Component {
                         Mark As Read
                     </button>
 
-                    <button class="btn btn-default">
+                    <button class="btn btn-default" onClick={this.handleUnRead}>
                         Mark As Unread
                     </button>
 
