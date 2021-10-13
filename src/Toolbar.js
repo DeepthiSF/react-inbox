@@ -41,7 +41,7 @@ class Toolbar extends React.Component {
                 return { ...message, selected: true }
 
             })
-            
+
             this.finalSelectState = true;
             this.setState({
                 messages: newMessages
@@ -97,22 +97,25 @@ class Toolbar extends React.Component {
 
 
 
-    // handleRead = () => {
-    //     // selectAllMessages = messages.map((message, index) => {
-    //     //     return setState({this.state.message = true});
-    //     // })
-    //     return (
+    handleRead = () => {
+        
+        let newMessages = this.state.messages.slice();
 
-    //         this.state.messages.map((message,index) => {
-    //             this.setState({message.selected = true})
-    //         })
+        newMessages = newMessages.map((message) => {
+            if(message.selected === true){
+                return {...message, read: true}
+            } else{
+                return {...message}
+            }
+        })
 
-    //     )
-
-    // }
+        this.setState({
+            messages: newMessages
+        })
+    }
 
     render() {
-        // this.finalSelectState = this.selectState();
+       
         return (
             <div class="row toolbar">
                 <div class="col-md-12">
@@ -125,7 +128,7 @@ class Toolbar extends React.Component {
                         <i class="fa fa-check-square-o" onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
                     </button>
 
-                    <button class="btn btn-default">
+                    <button class="btn btn-default" onClick={this.handleRead}>
                         Mark As Read
                     </button>
 
