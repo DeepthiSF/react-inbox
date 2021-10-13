@@ -4,11 +4,12 @@ import messages from './MessageData';
 
 class Toolbar extends React.Component {
 
-    constructor(){
+    constructor() {
         super()
         this.state = {
-            messages : messages,
+            messages: messages,
         }
+        this.finalSelectState = this.selectState();
     }
 
     toggleStarred = (event) => {
@@ -28,85 +29,140 @@ class Toolbar extends React.Component {
         newMessages[id].selected = !newMessages[id].selected;
         this.setState({
             messages: newMessages
-        })      
+        })
     }
+
 
     handleSelectAll = () => {
+        
         let newMessages = this.state.messages.slice();
-        newMessages = newMessages.map((message) => {
-            return {...message, selected: true}
-        })
-        this.setState({
-            messages: newMessages
-        })
+        
+            newMessages = newMessages.map((message) => {
+                return { ...message, selected: true }
+
+            })
+            
+            this.finalSelectState = true;
+            this.setState({
+                messages: newMessages
+            })
+        
     }
 
+    handleDeSelectAll = () => {
+       
+        let newMessages = this.state.messages.slice();
         
+            newMessages = newMessages.map((message) => {
+                return { ...message, selected: false }
+            })
+
+            this.finalSelectState = false;
+            this.setState({
+                messages: newMessages
+            })
+        
+    }
+
+    selectState = () => {
+
+        let selectValues = this.state.messages.map((message) => {
+            return message.selected
+        })
+        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
+        console.log(allSelectedIsTrue)
+        return allSelectedIsTrue;
+    }
+
+   
+
+    // dynamicSelectButtonClassName = () => {
+    //     let className = "fa"
+    //     let selectValues = this.state.messages.map((message) => {
+    //         return message.selected
+    //     })
+
+    //     let selectedStateFalse = selectValues.find((element) => element === 'false');
+    //     let selectedStateUndefined = selectValues.find((element) => element === 'undefined');
+    //     let allSelectedIsTrue = selectValues.every((value) => {return value === 'true'})
+
+    //     if(selectedStateFalse || selectedStateUndefined){
+    //         className += " fa-minus-square-o"
+    //     } else if (!selectedStateFalse{
+    //         className += " fa-check-square-o"
+    //     }
+    //     return className;
+    // }
+
+
+
+
     // handleRead = () => {
     //     // selectAllMessages = messages.map((message, index) => {
     //     //     return setState({this.state.message = true});
     //     // })
     //     return (
-            
+
     //         this.state.messages.map((message,index) => {
     //             this.setState({message.selected = true})
     //         })
-            
+
     //     )
 
     // }
 
     render() {
-      return (
-        <div class="row toolbar">
-            <div class="col-md-12">
-                <p class="pull-right">
-                    <span class="badge badge" className='badge'>0</span>
-                    unread messages
-                </p>
+        // this.finalSelectState = this.selectState();
+        return (
+            <div class="row toolbar">
+                <div class="col-md-12">
+                    <p class="pull-right">
+                        <span class="badge badge" className='badge'>0</span>
+                        unread messages
+                    </p>
 
-                <button class="btn btn-default">
-                    <i class="fa fa-check-square-o" onClick = {this.handleSelectAll}></i>
-                </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-check-square-o" onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
+                    </button>
 
-                <button class="btn btn-default">
-                    Mark As Read
-                </button>
+                    <button class="btn btn-default">
+                        Mark As Read
+                    </button>
 
-                <button class="btn btn-default">
-                    Mark As Unread
-                </button>
+                    <button class="btn btn-default">
+                        Mark As Unread
+                    </button>
 
-                <select class="form-control label-select">
-                    <option>Apply label</option>
-                    <option value="dev">dev</option>
-                    <option value="personal">personal</option>
-                    <option value="gschool">gschool</option>
-                </select>
+                    <select class="form-control label-select">
+                        <option>Apply label</option>
+                        <option value="dev">dev</option>
+                        <option value="personal">personal</option>
+                        <option value="gschool">gschool</option>
+                    </select>
 
-                <select class="form-control label-select">
-                    <option>Remove label</option>
-                    <option value="dev">dev</option>
-                    <option value="personal">personal</option>
-                    <option value="gschool">gschool</option>
-                </select>
+                    <select class="form-control label-select">
+                        <option>Remove label</option>
+                        <option value="dev">dev</option>
+                        <option value="personal">personal</option>
+                        <option value="gschool">gschool</option>
+                    </select>
 
-                <button class="btn btn-default">
-                    <i class="fa fa-trash-o"></i>
-                </button>
+                    <button class="btn btn-default">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <MessageList
+                        messages={this.state.messages}
+                        toggleStarred={this.toggleStarred}
+                        toggleSelected={this.toggleSelected}
+                    />
+                </div>
             </div>
-            
-            <div>
-                <MessageList
-                     messages={this.state.messages}
-                     toggleStarred={this.toggleStarred}
-                     toggleSelected={this.toggleSelected}        
-                />
-            </div>
-        </div>
-        
-    )
-}
+
+        )
+    }
 }
 
 export default Toolbar;
