@@ -31,20 +31,15 @@ const Message = (props) => {
         <ul>
             <div
                 className={dynamicClassName()}
-                // className={this.props.dynamicClassName()}
             >
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">
-                            <input type="checkbox"
-                                // checked={props.data.selected? "checked":""} onChange={this.handleSelected}/>
-                                checked={props.data.selected? "checked":""} />
-                                 {/* checked={this.state.selected? "checked":""} onChange={this.props.handleSelected}/> */}
+                            <input id={props.index} type="checkbox"
+                                checked={props.data.selected? "checked":""} onChange={props.toggleSelected}/>                                
                         </div>
                         <div className="col-xs-2">
-                            <i id={props.index} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.handleStarred}></i>
-                            {/* <i  className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} ></i> */}
-                            {/* <i className={this.state.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={this.props.handleStarred}></i> */}
+                            <i id={props.index} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.toggleStarred}></i>
                         </div>
                     </div>
                 </div>

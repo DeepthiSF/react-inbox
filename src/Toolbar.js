@@ -11,8 +11,8 @@ class Toolbar extends React.Component {
         }
     }
 
-    handleStarred = (e) => {
-        let id = e.target.id
+    toggleStarred = (event) => {
+        let id = event.target.id
         console.log(id)
         let newMessages = this.state.messages.slice();
         newMessages[id].starred = !newMessages[id].starred
@@ -21,11 +21,15 @@ class Toolbar extends React.Component {
         })
     }
 
-    // handleSelected = (i) => {
-    //     this.setState({
-    //         selected: !this.state.selected
-    //     })      
-    // }
+    toggleSelected = (event) => {
+        let id = event.target.id
+        console.log(id)
+        let newMessages = this.state.messages.slice();
+        newMessages[id].selected = !newMessages[id].selected;
+        this.setState({
+            messages: newMessages
+        })      
+    }
 
         
     // handleRead = () => {
@@ -85,8 +89,8 @@ class Toolbar extends React.Component {
             <div>
                 <MessageList
                      messages={this.state.messages}
-                     handleStarred={this.handleStarred}
-                    //  handleSelected={this.handleSelected}        
+                     toggleStarred={this.toggleStarred}
+                     toggleSelected={this.toggleSelected}        
                 />
             </div>
         </div>
