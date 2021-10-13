@@ -10,6 +10,18 @@ class Toolbar extends React.Component {
             messages: messages,
         }
         this.finalSelectState = this.selectState();
+        
+    }
+
+    unreadMessageCount = () => {
+        let newMessages = this.state.messages.slice();
+        let unreadMessages = newMessages.filter((message) => {
+            return message.read === false
+            })
+            
+        console.log(unreadMessages)
+        let unreadMessageCount;
+        return unreadMessageCount = unreadMessages.length;
     }
 
     toggleStarred = (event) => {
@@ -131,13 +143,29 @@ class Toolbar extends React.Component {
         })
     }
 
+
+    handleDelete = () => {
+        console.log("i am here")
+        let newMessages = this.state.messages.slice();
+
+        newMessages = newMessages.filter((message, index) => {
+            return (message.selected === false || message.selected === undefined);
+        })
+
+        this.setState({
+            messages: newMessages
+        })
+
+    }
+
+
     render() {
        
         return (
             <div class="row toolbar">
                 <div class="col-md-12">
                     <p class="pull-right">
-                        <span class="badge badge" className='badge'>0</span>
+                        <span class="badge badge" className='badge'>{this.unreadMessageCount()}</span>
                         unread messages
                     </p>
 
@@ -168,7 +196,7 @@ class Toolbar extends React.Component {
                     </select>
 
                     <button class="btn btn-default">
-                        <i class="fa fa-trash-o"></i>
+                        <i class="fa fa-trash-o" onClick={this.handleDelete}></i>
                     </button>
                 </div>
 
