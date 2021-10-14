@@ -186,6 +186,28 @@ class Toolbar extends React.Component {
         })
     } 
 
+    removeLabel = (label) => {
+        
+        let newMessages = this.state.messages.slice();
+        
+        newMessages = newMessages.map((message, index)=> {
+            if(message.selected === true && message.labels.indexOf(label) !== -1){            
+                    let index;
+                    index = message.labels.indexOf(label);        
+                    message.labels.splice(index, 1); 
+                    // message.labels = message.labels.concat([label]) 
+                    message.selected = false;                   
+                    return message;                
+            } else {
+                return message;
+            }
+        })
+    
+        this.setState({
+            messages: newMessages
+        })
+    } 
+
     
     
 
@@ -218,8 +240,8 @@ class Toolbar extends React.Component {
                         <option  value="gschool">gschool</option>
                     </select>
 
-                    <select class="form-control label-select">
-                        <option>Remove label</option>
+                    <select class="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
+                        <option>Remove Label </option>
                         <option value="dev" >dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
