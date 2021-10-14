@@ -10,16 +10,21 @@ class Toolbar extends React.Component {
             messages: messages,
         }
         this.finalSelectState = this.selectState();
+       
+
         
     }
 
     unreadMessageCount = () => {
+
         let newMessages = this.state.messages.slice();
+        console.log(this.state.messages)
         let unreadMessages = newMessages.filter((message) => {
+            console.log(message)
             return message.read === false
             })
             
-        console.log(unreadMessages)
+        // console.log(unreadMessages)
         let unreadMessageCount;
         return unreadMessageCount = unreadMessages.length;
     }
@@ -158,6 +163,31 @@ class Toolbar extends React.Component {
 
     }
 
+   
+
+    addLabel = (label) => {
+        
+        let newMessages = this.state.messages.slice();
+        if(label !== "Apply label"){
+        newMessages = newMessages.map((message, index)=> {
+            if(message.selected === true && message.labels.indexOf(label) === -1){            
+                              
+                    message.labels.push(label) 
+                    // message.labels = message.labels.concat([label]) 
+                    message.selected = false;                   
+                    return message;                
+            } else {
+                return message;
+            }
+        })
+    }
+        this.setState({
+            messages: newMessages
+        })
+    } 
+
+    
+    
 
     render() {
        
@@ -181,16 +211,16 @@ class Toolbar extends React.Component {
                         Mark As Unread
                     </button>
 
-                    <select class="form-control label-select">
+                    <select class="form-control label-select"  onChange={(e) => this.addLabel(e.target.value)}>
                         <option>Apply label</option>
-                        <option value="dev">dev</option>
-                        <option value="personal">personal</option>
-                        <option value="gschool">gschool</option>
+                        <option  value="dev">dev</option>
+                        <option  value="personal">personal</option>
+                        <option  value="gschool">gschool</option>
                     </select>
 
                     <select class="form-control label-select">
                         <option>Remove label</option>
-                        <option value="dev">dev</option>
+                        <option value="dev" >dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
                     </select>
