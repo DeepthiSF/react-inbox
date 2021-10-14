@@ -18,20 +18,20 @@ class Toolbar extends React.Component {
     unreadMessageCount = () => {
 
         let newMessages = this.state.messages.slice();
-        console.log(this.state.messages)
+       
         let unreadMessages = newMessages.filter((message) => {
-            console.log(message)
+           
             return message.read === false
             })
             
-        // console.log(unreadMessages)
+        
         let unreadMessageCount;
         return unreadMessageCount = unreadMessages.length;
     }
 
     toggleStarred = (event) => {
         let id = event.target.id
-        console.log(id)
+        
         let newMessages = this.state.messages.slice();
         newMessages[id].starred = !newMessages[id].starred
         this.setState({
@@ -41,7 +41,7 @@ class Toolbar extends React.Component {
 
     toggleSelected = (event) => {
         let id = event.target.id
-        console.log(id)
+      
         let newMessages = this.state.messages.slice();
         newMessages[id].selected = !newMessages[id].selected;
         this.setState({
@@ -87,29 +87,29 @@ class Toolbar extends React.Component {
             return message.selected
         })
         let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
-        console.log(allSelectedIsTrue)
+        
         return allSelectedIsTrue;
     }
 
    
 
-    // dynamicSelectButtonClassName = () => {
-    //     let className = "fa"
-    //     let selectValues = this.state.messages.map((message) => {
-    //         return message.selected
-    //     })
+    dynamicSelectButtonClassName = () => {
+        let className = "fa"
+        let newMessages = this.state.messages.slice();
+        newMessages = newMessages.filter((message)=> {
+            return message.selected === true;
+        })
 
-    //     let selectedStateFalse = selectValues.find((element) => element === 'false');
-    //     let selectedStateUndefined = selectValues.find((element) => element === 'undefined');
-    //     let allSelectedIsTrue = selectValues.every((value) => {return value === 'true'})
+        if(newMessages.length === this.state.messages.length){
+            className += " fa-check-square-o"
+        } else if(newMessages.length < this.state.messages.length && newMessages.length > 0){
+            className += " fa-minus-square-o"
+        } else {
+            className += " fa-square-o"
+        }
 
-    //     if(selectedStateFalse || selectedStateUndefined){
-    //         className += " fa-minus-square-o"
-    //     } else if (!selectedStateFalse{
-    //         className += " fa-check-square-o"
-    //     }
-    //     return className;
-    // }
+        return className;
+    }
 
 
 
@@ -214,41 +214,42 @@ class Toolbar extends React.Component {
     render() {
        
         return (
-            <div class="row toolbar">
-                <div class="col-md-12">
-                    <p class="pull-right">
-                        <span class="badge badge" className='badge'>{this.unreadMessageCount()}</span>
+            <div className="row toolbar">
+                <div className="col-md-12">
+                    <p className="pull-right">
+                        <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span>
                         unread messages
                     </p>
 
-                    <button class="btn btn-default">
-                        <i class="fa fa-check-square-o" onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
+                    <button className="btn btn-default">
+                        {/* <i className="fa fa-check-square-o" onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i> */}
+                        <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
                     </button>
 
-                    <button class="btn btn-default" onClick={this.handleRead}>
+                    <button className="btn btn-default" onClick={this.handleRead}>
                         Mark As Read
                     </button>
 
-                    <button class="btn btn-default" onClick={this.handleUnRead}>
+                    <button className="btn btn-default" onClick={this.handleUnRead}>
                         Mark As Unread
                     </button>
 
-                    <select class="form-control label-select"  onChange={(e) => this.addLabel(e.target.value)}>
+                    <select className="form-control label-select"  onChange={(e) => this.addLabel(e.target.value)}>
                         <option>Apply label</option>
                         <option  value="dev">dev</option>
                         <option  value="personal">personal</option>
                         <option  value="gschool">gschool</option>
                     </select>
 
-                    <select class="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
+                    <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
                         <option>Remove Label </option>
                         <option value="dev" >dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
                     </select>
 
-                    <button class="btn btn-default">
-                        <i class="fa fa-trash-o" onClick={this.handleDelete}></i>
+                    <button className="btn btn-default">
+                        <i className="fa fa-trash-o" onClick={this.handleDelete}></i>
                     </button>
                 </div>
 
