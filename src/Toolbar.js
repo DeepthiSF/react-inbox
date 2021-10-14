@@ -10,28 +10,52 @@ class Toolbar extends React.Component {
             messages: messages,
         }
         this.finalSelectState = this.selectState();
-       
 
-        
+
+    }
+
+    selectState = () => {
+
+        let selectValues = this.state.messages.map((message) => {
+            return message.selected
+        })
+        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
+
+        return allSelectedIsTrue;
+    }
+
+    totalselectMessages = () => {
+        let totalSelectMessages = 0;
+        let newMessages = this.state.messages.slice();
+        let selectedMessages = newMessages.filter((message) => {
+            return message.selected === true;
+        })
+
+        totalSelectMessages = selectedMessages.length;
+        if (totalSelectMessages === 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     unreadMessageCount = () => {
 
         let newMessages = this.state.messages.slice();
-       
+
         let unreadMessages = newMessages.filter((message) => {
-           
+
             return message.read === false
-            })
-            
-        
+        })
+
+
         let unreadMessageCount;
         return unreadMessageCount = unreadMessages.length;
     }
 
     toggleStarred = (event) => {
         let id = event.target.id
-        
+
         let newMessages = this.state.messages.slice();
         newMessages[id].starred = !newMessages[id].starred
         this.setState({
@@ -41,7 +65,7 @@ class Toolbar extends React.Component {
 
     toggleSelected = (event) => {
         let id = event.target.id
-      
+
         let newMessages = this.state.messages.slice();
         newMessages[id].selected = !newMessages[id].selected;
         this.setState({
@@ -51,58 +75,48 @@ class Toolbar extends React.Component {
 
 
     handleSelectAll = () => {
-        
+
         let newMessages = this.state.messages.slice();
-        
-            newMessages = newMessages.map((message) => {
-                return { ...message, selected: true }
 
-            })
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: true }
 
-            this.finalSelectState = true;
-            this.setState({
-                messages: newMessages
-            })
-        
+        })
+
+        this.finalSelectState = true;
+        this.setState({
+            messages: newMessages
+        })
+
     }
 
     handleDeSelectAll = () => {
-       
+
         let newMessages = this.state.messages.slice();
-        
-            newMessages = newMessages.map((message) => {
-                return { ...message, selected: false }
-            })
 
-            this.finalSelectState = false;
-            this.setState({
-                messages: newMessages
-            })
-        
-    }
-
-    selectState = () => {
-
-        let selectValues = this.state.messages.map((message) => {
-            return message.selected
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: false }
         })
-        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
-        
-        return allSelectedIsTrue;
+
+        this.finalSelectState = false;
+        this.setState({
+            messages: newMessages
+        })
+
     }
 
-   
+
 
     dynamicSelectButtonClassName = () => {
         let className = "fa"
         let newMessages = this.state.messages.slice();
-        newMessages = newMessages.filter((message)=> {
+        newMessages = newMessages.filter((message) => {
             return message.selected === true;
         })
 
-        if(newMessages.length === this.state.messages.length){
+        if (newMessages.length === this.state.messages.length) {
             className += " fa-check-square-o"
-        } else if(newMessages.length < this.state.messages.length && newMessages.length > 0){
+        } else if (newMessages.length < this.state.messages.length && newMessages.length > 0) {
             className += " fa-minus-square-o"
         } else {
             className += " fa-square-o"
@@ -112,107 +126,124 @@ class Toolbar extends React.Component {
     }
 
 
-
-
     handleRead = () => {
-        
-        let newMessages = this.state.messages.slice();
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messages.slice();
 
-        newMessages = newMessages.map((message) => {
-            if(message.selected === true){
-                return {...message, read: true}
-            } else{
-                return {...message}
-            }
-        })
+            newMessages = newMessages.map((message) => {
+                if (message.selected === true) {
+                    return { ...message, read: true }
+                } else {
+                    return { ...message }
+                }
+            })
 
-        this.setState({
-            messages: newMessages
-        })
+            this.setState({
+                messages: newMessages
+            })
+        }
+
     }
 
     handleUnRead = () => {
-        
-        let newMessages = this.state.messages.slice();
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messages.slice();
 
-        newMessages = newMessages.map((message) => {
-            if(message.selected === true){
-                return {...message, read: false}
-            } else{
-                return {...message}
-            }
-        })
+            newMessages = newMessages.map((message) => {
+                if (message.selected === true) {
+                    return { ...message, read: false }
+                } else {
+                    return { ...message }
+                }
+            })
 
-        this.setState({
-            messages: newMessages
-        })
+            this.setState({
+                messages: newMessages
+            })
+        }
     }
 
 
     handleDelete = () => {
-        console.log("i am here")
-        let newMessages = this.state.messages.slice();
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messages.slice();
 
-        newMessages = newMessages.filter((message, index) => {
-            return (message.selected === false || message.selected === undefined);
-        })
+            newMessages = newMessages.filter((message, index) => {
+                return (message.selected === false || message.selected === undefined);
+            })
 
-        this.setState({
-            messages: newMessages
-        })
-
+            this.setState({
+                messages: newMessages
+            })
+        }
     }
 
-   
+
 
     addLabel = (label) => {
-        
-        let newMessages = this.state.messages.slice();
-        if(label !== "Apply label"){
-        newMessages = newMessages.map((message, index)=> {
-            if(message.selected === true && message.labels.indexOf(label) === -1){            
-                              
-                    message.labels.push(label) 
-                    // message.labels = message.labels.concat([label]) 
-                    message.selected = false;                   
-                    return message;                
-            } else {
-                return message;
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messages.slice();
+            if (label !== "Apply label") {
+                newMessages = newMessages.map((message, index) => {
+                    if (message.selected === true && message.labels.indexOf(label) === -1) {
+
+                        message.labels.push(label)
+                        // message.labels = message.labels.concat([label]) 
+                        message.selected = false;
+                        return message;
+                    } else {
+                        return message;
+                    }
+                })
             }
-        })
+            this.setState({
+                messages: newMessages
+            })
+        }
     }
-        this.setState({
-            messages: newMessages
-        })
-    } 
 
     removeLabel = (label) => {
-        
-        let newMessages = this.state.messages.slice();
-        
-        newMessages = newMessages.map((message, index)=> {
-            if(message.selected === true && message.labels.indexOf(label) !== -1){            
-                    let index;
-                    index = message.labels.indexOf(label);        
-                    message.labels.splice(index, 1); 
-                    // message.labels = message.labels.concat([label]) 
-                    message.selected = false;                   
-                    return message;                
-            } else {
-                return message;
-            }
-        })
-    
-        this.setState({
-            messages: newMessages
-        })
-    } 
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messages.slice();
 
-    
-    
+            newMessages = newMessages.map((message, index) => {
+                if (message.selected === true && message.labels.indexOf(label) !== -1) {
+                    let index;
+                    index = message.labels.indexOf(label);
+                    message.labels.splice(index, 1);
+                    // message.labels = message.labels.concat([label]) 
+                    message.selected = false;
+                    return message;
+                } else {
+                    return message;
+                }
+            })
+
+            this.setState({
+                messages: newMessages
+            })
+        }
+    }
+
+    alertHandle = () => {
+
+        return alert("Please select a message to use the toolbar items");
+
+    }
+
 
     render() {
-       
+
         return (
             <div className="row toolbar">
                 <div className="col-md-12">
@@ -222,7 +253,6 @@ class Toolbar extends React.Component {
                     </p>
 
                     <button className="btn btn-default">
-                        {/* <i className="fa fa-check-square-o" onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i> */}
                         <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
                     </button>
 
@@ -234,11 +264,11 @@ class Toolbar extends React.Component {
                         Mark As Unread
                     </button>
 
-                    <select className="form-control label-select"  onChange={(e) => this.addLabel(e.target.value)}>
+                    <select className="form-control label-select" onChange={(e) => this.addLabel(e.target.value)}>
                         <option>Apply label</option>
-                        <option  value="dev">dev</option>
-                        <option  value="personal">personal</option>
-                        <option  value="gschool">gschool</option>
+                        <option value="dev">dev</option>
+                        <option value="personal">personal</option>
+                        <option value="gschool">gschool</option>
                     </select>
 
                     <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
