@@ -1,15 +1,7 @@
 import React from 'react';
 
 const Message = (props) => {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         read: this.props.data.read,
-    //         selected: this.props.data.selected,
-    //         starred: this.props.data.starred,
-    //     }
-    // }
-
+    
     let dynamicClass = "row message"
 
     const dynamicClassName = () => {
@@ -47,9 +39,7 @@ const Message = (props) => {
                     {(props.data.labels).map((label, index) => {
                         return <span class="label label-warning">{label}</span>
                     })}
-                    {/* {(this.props.labels).map((label, index) => {
-                        return <span class="label label-warning">{label}</span>
-                    })} */}
+                    
                     <a href="#">
                     {props.data.subject}
                     </a>
