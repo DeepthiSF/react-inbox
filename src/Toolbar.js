@@ -231,20 +231,39 @@ class Toolbar extends React.Component {
     }
 
 
-    handleDelete = () => {
+    handleDelete = async () => {
+        
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
             let newMessages = this.state.messageApiResponse.slice();
-
-            newMessages = newMessages.filter((message, index) => {
-                return (message.selected === false || message.selected === undefined);
+            let itemsSelected = [];
+            newMessages.map((message) => {
+                if (message.selected === true) {
+                    itemsSelected.push(message.id)
+                }
             })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'delete',                            
+                        })
+                })
 
+            const messages = await response.json()
             this.setState({
-                messageApiResponse: newMessages
+                messageApiResponse: messages
             })
         }
+        
     }
 
 
