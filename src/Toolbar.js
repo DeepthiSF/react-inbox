@@ -7,7 +7,6 @@ class Toolbar extends React.Component {
     constructor() {
         super()
         this.state = {
-            // messages: messages,
             messageApiResponse: []
         }
         this.finalSelectState = this.selectState();
@@ -24,12 +23,6 @@ class Toolbar extends React.Component {
             })
 
     }
-
-    // componentDidUpdate(prevState) {
-    //     if (this.state.messages !== prevState.messages) {
-    //         this.getMessages();
-    //     }
-    // }
 
     selectState = () => {
 
@@ -59,23 +52,20 @@ class Toolbar extends React.Component {
     unreadMessageCount = () => {
 
         console.log(this.state.messageApiResponse)
-        //let newMessages = this.state.messageApiResponse.slice();
-        let newMessages = { ...this.state.messageApiResponse };
-
+        let newMessages = this.state.messageApiResponse.slice();   
         let unreadMessages = newMessages.filter((message) => {
-
             return message.read === false
         })
-
-
         let unreadMessageCount;
         return unreadMessageCount = unreadMessages.length;
     }
 
 
     toggleStarred = async (event) => {
-        let id = event.target.id;
-        id++;
+        let newMessages = this.state.messageApiResponse.slice();   
+        
+        let indexOfMessage = event.target.id
+        let id = newMessages[indexOfMessage].id;     
 
         const response = await fetch(`http://localhost:8082/api/messages`,
             {
@@ -143,8 +133,6 @@ class Toolbar extends React.Component {
 
     dynamicSelectButtonClassName = () => {
         let className = "fa"
-        // let newMessages = this.state.messages.slice();
-        //console.log(this.state.messageApiResponse)
         let newMessages = this.state.messageApiResponse.slice();
         newMessages = newMessages.filter((message) => {
             return message.selected === true;
@@ -357,11 +345,15 @@ class Toolbar extends React.Component {
             <div className="row toolbar">
                 <div className="col-md-12">
                     <p className="pull-right">
-                        {/* <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span> */}
+                        <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span>
                         <span className="badge badge" className='badge'></span>
-                        <span className="badge badge" className='badge'>0</span>
+                        <span className="badge badge" className='badge'></span>
                         unread messages
                     </p>
+
+                    <a class="btn btn-danger">
+                        <i class="fa fa-plus"></i>
+                    </a>                    
 
                     <button className="btn btn-default">
                         <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
@@ -396,7 +388,6 @@ class Toolbar extends React.Component {
 
                 <div>
                     <MessageList
-                        // messages={this.state.messages}
                         messages={this.state.messageApiResponse}
                         toggleStarred={this.toggleStarred}
                         toggleSelected={this.toggleSelected}
