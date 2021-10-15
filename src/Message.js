@@ -27,7 +27,7 @@ const Message = (props) => {
                 <div className="col-xs-1">
                     <div className="row">
                         <div className="col-xs-2">
-                            <input id={props.index} type="checkbox"
+                            <input id={(props.index)} type="checkbox"
                                 checked={props.data.selected? "checked":""} onChange={props.toggleSelected}/>                                
                         </div>
                         <div className="col-xs-2">

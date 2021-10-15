@@ -60,7 +60,7 @@ class Toolbar extends React.Component {
 
         console.log(this.state.messageApiResponse)
         //let newMessages = this.state.messageApiResponse.slice();
-        let newMessages = {...this.state.messageApiResponse};
+        let newMessages = { ...this.state.messageApiResponse };
 
         let unreadMessages = newMessages.filter((message) => {
 
@@ -74,7 +74,8 @@ class Toolbar extends React.Component {
 
 
     toggleStarred = async (event) => {
-        let id = event.target.id
+        let id = event.target.id;
+        id++;
 
         const response = await fetch(`http://localhost:8082/api/messages`,
             {
@@ -97,6 +98,7 @@ class Toolbar extends React.Component {
 
     toggleSelected = (event) => {
         let id = event.target.id
+        console.log(id)
 
         let newMessages = this.state.messageApiResponse.slice();
         newMessages[id].selected = !newMessages[id].selected;
@@ -160,43 +162,70 @@ class Toolbar extends React.Component {
     }
 
 
-    handleRead = () => {
+    handleRead = async () => {
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
             let newMessages = this.state.messageApiResponse.slice();
-
-            newMessages = newMessages.map((message) => {
+            let itemsSelected = [];
+            newMessages.map((message) => {
                 if (message.selected === true) {
-                    return { ...message, read: true }
-                } else {
-                    return { ...message }
+                    itemsSelected.push(message.id)
                 }
             })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'read',
+                            read: true,
+                        })
+                })
 
+            const messages = await response.json()
             this.setState({
-                messageApiResponse: newMessages
+                messageApiResponse: messages
             })
         }
-
     }
 
-    handleUnRead = () => {
+    handleUnRead = async () => {
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
             let newMessages = this.state.messageApiResponse.slice();
-
-            newMessages = newMessages.map((message) => {
+            let itemsSelected = [];
+            newMessages.map((message) => {
                 if (message.selected === true) {
-                    return { ...message, read: false }
-                } else {
-                    return { ...message }
+                    itemsSelected.push(message.id)
                 }
             })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'read',
+                            read: false,
+                        })
+                })
 
+            const messages = await response.json()
             this.setState({
-                messageApiResponse: newMessages
+                messageApiResponse: messages
             })
         }
     }
