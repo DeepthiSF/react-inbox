@@ -10,123 +10,147 @@ class Toolbar extends React.Component {
             // messages: messages,
             messageApiResponse: []
         }
-        // this.finalSelectState = this.selectState();
+        this.finalSelectState = this.selectState();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         fetch("http://localhost:8082/api/messages")
-        .then(response => response.json())
-        .then((response) => {
-            this.setState({
-                messageApiResponse: response
+            .then(response => response.json())
+            .then((response) => {
+                console.log(response)
+                this.setState({
+                    messageApiResponse: response
+                })
             })
-        })
+
     }
 
-    // selectState = () => {
-
-    //     let selectValues = this.state.messages.map((message) => {
-    //         return message.selected
-    //     })
-    //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
-
-    //     return allSelectedIsTrue;
-    // }
-
-    // totalselectMessages = () => {
-    //     let totalSelectMessages = 0;
-    //     let newMessages = this.state.messages.slice();
-    //     let selectedMessages = newMessages.filter((message) => {
-    //         return message.selected === true;
-    //     })
-
-    //     totalSelectMessages = selectedMessages.length;
-    //     if (totalSelectMessages === 0) {
-    //         return true;
-    //     } else {
-    //         return false;
+    // componentDidUpdate(prevState) {
+    //     if (this.state.messages !== prevState.messages) {
+    //         this.getMessages();
     //     }
     // }
 
-    // unreadMessageCount = () => {
+    selectState = () => {
 
-    //     let newMessages = this.state.messages.slice();
+        let selectValues = this.state.messageApiResponse.map((message) => {
+            return message.selected
+        })
+        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
 
-    //     let unreadMessages = newMessages.filter((message) => {
+        return allSelectedIsTrue;
+    }
 
-    //         return message.read === false
-    //     })
+    totalselectMessages = () => {
+        let totalSelectMessages = 0;
+        let newMessages = this.state.messageApiResponse.slice();
+        let selectedMessages = newMessages.filter((message) => {
+            return message.selected === true;
+        })
+
+        totalSelectMessages = selectedMessages.length;
+        if (totalSelectMessages === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    unreadMessageCount = () => {
+
+        console.log(this.state.messageApiResponse)
+        //let newMessages = this.state.messageApiResponse.slice();
+        let newMessages = {...this.state.messageApiResponse};
+
+        let unreadMessages = newMessages.filter((message) => {
+
+            return message.read === false
+        })
 
 
-    //     let unreadMessageCount;
-    //     return unreadMessageCount = unreadMessages.length;
-    // }
-
-    // toggleStarred = (event) => {
-    //     let id = event.target.id
-
-    //     let newMessages = this.state.messages.slice();
-    //     newMessages[id].starred = !newMessages[id].starred
-    //     this.setState({
-    //         messages: newMessages
-    //     })
-    // }
-
-    // toggleSelected = (event) => {
-    //     let id = event.target.id
-
-    //     let newMessages = this.state.messages.slice();
-    //     newMessages[id].selected = !newMessages[id].selected;
-    //     this.setState({
-    //         messages: newMessages
-    //     })
-    // }
+        let unreadMessageCount;
+        return unreadMessageCount = unreadMessages.length;
+    }
 
 
-    // handleSelectAll = () => {
+    toggleStarred = async (event) => {
+        let id = event.target.id
 
-    //     let newMessages = this.state.messages.slice();
+        const response = await fetch(`http://localhost:8082/api/messages`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        messageIds: [id],
+                        command: 'star',
+                    })
 
-    //     newMessages = newMessages.map((message) => {
-    //         return { ...message, selected: true }
+            })
 
-    //     })
+        const messages = await response.json()
+        this.setState({ messageApiResponse: messages })
+    }
 
-    //     this.finalSelectState = true;
-    //     this.setState({
-    //         messages: newMessages
-    //     })
+    toggleSelected = (event) => {
+        let id = event.target.id
 
-    // }
+        let newMessages = this.state.messageApiResponse.slice();
+        newMessages[id].selected = !newMessages[id].selected;
+        this.setState({
+            messageApiResponse: newMessages
+        })
+    }
 
-    // handleDeSelectAll = () => {
 
-    //     let newMessages = this.state.messages.slice();
+    handleSelectAll = () => {
 
-    //     newMessages = newMessages.map((message) => {
-    //         return { ...message, selected: false }
-    //     })
+        let newMessages = this.state.messageApiResponse.slice();
 
-    //     this.finalSelectState = false;
-    //     this.setState({
-    //         messages: newMessages
-    //     })
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: true }
 
-    // }
+        })
+
+        this.finalSelectState = true;
+        this.setState({
+            messageApiResponse: newMessages
+        })
+
+    }
+
+    handleDeSelectAll = () => {
+
+        let newMessages = this.state.messageApiResponse.slice();
+
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: false }
+        })
+
+        this.finalSelectState = false;
+        this.setState({
+            messageApiResponse: newMessages
+        })
+
+    }
 
 
 
     dynamicSelectButtonClassName = () => {
         let className = "fa"
         // let newMessages = this.state.messages.slice();
+        //console.log(this.state.messageApiResponse)
         let newMessages = this.state.messageApiResponse.slice();
         newMessages = newMessages.filter((message) => {
             return message.selected === true;
         })
 
-        if (newMessages.length === this.state.messages.length) {
+        if (newMessages.length === this.state.messageApiResponse.length) {
             className += " fa-check-square-o"
-        } else if (newMessages.length < this.state.messages.length && newMessages.length > 0) {
+        } else if (newMessages.length < this.state.messageApiResponse.length && newMessages.length > 0) {
             className += " fa-minus-square-o"
         } else {
             className += " fa-square-o"
@@ -136,129 +160,131 @@ class Toolbar extends React.Component {
     }
 
 
-    // handleRead = () => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messages.slice();
+    handleRead = () => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messageApiResponse.slice();
 
-    //         newMessages = newMessages.map((message) => {
-    //             if (message.selected === true) {
-    //                 return { ...message, read: true }
-    //             } else {
-    //                 return { ...message }
-    //             }
-    //         })
+            newMessages = newMessages.map((message) => {
+                if (message.selected === true) {
+                    return { ...message, read: true }
+                } else {
+                    return { ...message }
+                }
+            })
 
-    //         this.setState({
-    //             messages: newMessages
-    //         })
-    //     }
+            this.setState({
+                messageApiResponse: newMessages
+            })
+        }
 
-    // }
+    }
 
-    // handleUnRead = () => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messages.slice();
+    handleUnRead = () => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messageApiResponse.slice();
 
-    //         newMessages = newMessages.map((message) => {
-    //             if (message.selected === true) {
-    //                 return { ...message, read: false }
-    //             } else {
-    //                 return { ...message }
-    //             }
-    //         })
+            newMessages = newMessages.map((message) => {
+                if (message.selected === true) {
+                    return { ...message, read: false }
+                } else {
+                    return { ...message }
+                }
+            })
 
-    //         this.setState({
-    //             messages: newMessages
-    //         })
-    //     }
-    // }
-
-
-    // handleDelete = () => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messages.slice();
-
-    //         newMessages = newMessages.filter((message, index) => {
-    //             return (message.selected === false || message.selected === undefined);
-    //         })
-
-    //         this.setState({
-    //             messages: newMessages
-    //         })
-    //     }
-    // }
+            this.setState({
+                messageApiResponse: newMessages
+            })
+        }
+    }
 
 
+    handleDelete = () => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messageApiResponse.slice();
 
-    // addLabel = (label) => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messages.slice();
-    //         if (label !== "Apply label") {
-    //             newMessages = newMessages.map((message, index) => {
-    //                 if (message.selected === true && message.labels.indexOf(label) === -1) {
+            newMessages = newMessages.filter((message, index) => {
+                return (message.selected === false || message.selected === undefined);
+            })
 
-    //                     message.labels.push(label)
-    //                     // message.labels = message.labels.concat([label]) 
-    //                     message.selected = false;
-    //                     return message;
-    //                 } else {
-    //                     return message;
-    //                 }
-    //             })
-    //         }
-    //         this.setState({
-    //             messages: newMessages
-    //         })
-    //     }
-    // }
+            this.setState({
+                messageApiResponse: newMessages
+            })
+        }
+    }
 
-    // removeLabel = (label) => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messages.slice();
 
-    //         newMessages = newMessages.map((message, index) => {
-    //             if (message.selected === true && message.labels.indexOf(label) !== -1) {
-    //                 let index;
-    //                 index = message.labels.indexOf(label);
-    //                 message.labels.splice(index, 1);
-    //                 // message.labels = message.labels.concat([label]) 
-    //                 message.selected = false;
-    //                 return message;
-    //             } else {
-    //                 return message;
-    //             }
-    //         })
 
-    //         this.setState({
-    //             messages: newMessages
-    //         })
-    //     }
-    // }
+    addLabel = (label) => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messageApiResponse.slice();
+            if (label !== "Apply label") {
+                newMessages = newMessages.map((message, index) => {
+                    if (message.selected === true && message.labels.indexOf(label) === -1) {
 
-    // alertHandle = () => {
+                        message.labels.push(label)
+                        // message.labels = message.labels.concat([label]) 
+                        message.selected = false;
+                        return message;
+                    } else {
+                        return message;
+                    }
+                })
+            }
+            this.setState({
+                messageApiResponse: newMessages
+            })
+        }
+    }
 
-    //     return alert("Please select a message to use the toolbar items");
+    removeLabel = (label) => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.state.messageApiResponse.slice();
 
-    // }
+            newMessages = newMessages.map((message, index) => {
+                if (message.selected === true && message.labels.indexOf(label) !== -1) {
+                    let index;
+                    index = message.labels.indexOf(label);
+                    message.labels.splice(index, 1);
+                    // message.labels = message.labels.concat([label]) 
+                    message.selected = false;
+                    return message;
+                } else {
+                    return message;
+                }
+            })
+
+            this.setState({
+                messageApiResponse: newMessages
+            })
+        }
+    }
+
+    alertHandle = () => {
+
+        return alert("Please select a message to use the toolbar items");
+
+    }
 
 
     render() {
 
         return (
             <div className="row toolbar">
-                {/* <div className="col-md-12">
+                <div className="col-md-12">
                     <p className="pull-right">
-                        <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span>
+                        {/* <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span> */}
+                        <span className="badge badge" className='badge'></span>
+                        <span className="badge badge" className='badge'>0</span>
                         unread messages
                     </p>
 
@@ -291,14 +317,14 @@ class Toolbar extends React.Component {
                     <button className="btn btn-default">
                         <i className="fa fa-trash-o" onClick={this.handleDelete}></i>
                     </button>
-                </div> */}
+                </div>
 
                 <div>
                     <MessageList
-                       // messages={this.state.messages}
-                       messages={this.state.messageApiResponse}
-                        // toggleStarred={this.toggleStarred}
-                        // toggleSelected={this.toggleSelected}
+                        // messages={this.state.messages}
+                        messages={this.state.messageApiResponse}
+                        toggleStarred={this.toggleStarred}
+                        toggleSelected={this.toggleSelected}
                     />
                 </div>
             </div>

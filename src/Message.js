@@ -32,11 +32,12 @@ const Message = (props) => {
                         </div>
                         <div className="col-xs-2">
                             <i id={props.index} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.toggleStarred}></i>
+                            {/* <i id={props.index} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={() => props.toggleStarred(props.index)}></i> */}
                         </div>
                     </div>
                 </div>
                 <div className="col-xs-11">
-                    {(props.data.labels).map((label, index) => {
+                    {(props.data.labels).map((label) => {
                         return <span class="label label-warning">{label}</span>
                     })}
                     

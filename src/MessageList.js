@@ -6,7 +6,7 @@ function MessageList(props) {
         return <Message
         key={index} 
         data= {message}
-        index = {index}
+        index = {index+1}
         toggleStarred={props.toggleStarred}
         toggleSelected={props.toggleSelected}
         />
