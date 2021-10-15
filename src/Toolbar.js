@@ -232,7 +232,7 @@ class Toolbar extends React.Component {
 
 
     handleDelete = async () => {
-        
+
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
@@ -254,7 +254,7 @@ class Toolbar extends React.Component {
                     body: JSON.stringify(
                         {
                             messageIds: itemsSelected,
-                            command: 'delete',                            
+                            command: 'delete',
                         })
                 })
 
@@ -263,64 +263,91 @@ class Toolbar extends React.Component {
                 messageApiResponse: messages
             })
         }
-        
+
     }
 
 
 
-    addLabel = (label) => {
+    addLabel = async (label) => {
+        
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
-            let newMessages = this.state.messageApiResponse.slice();
+            let newMessages = this.state.messageApiResponse.slice();           
+            let itemsSelected = [];
             if (label !== "Apply label") {
-                newMessages = newMessages.map((message, index) => {
-                    if (message.selected === true && message.labels.indexOf(label) === -1) {
-
-                        message.labels.push(label)
-                        // message.labels = message.labels.concat([label]) 
-                        message.selected = false;
-                        return message;
-                    } else {
-                        return message;
+                newMessages.map((message, index) => {
+                    if (message.selected === true) {
+                        itemsSelected.push(message.id)                        
                     }
                 })
             }
+
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'addLabel',
+                            label: label,
+                        })
+                })
+
+            const messages = await response.json()
             this.setState({
-                messageApiResponse: newMessages
+                messageApiResponse: messages
             })
         }
+
     }
 
-    removeLabel = (label) => {
+
+    removeLabel = async (label) => {
+        
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
             let newMessages = this.state.messageApiResponse.slice();
+            let itemsSelected = [];
+            if (label !== "Apply label") {
+                newMessages.map((message, index) => {
+                    if (message.selected === true) {
+                        itemsSelected.push(message.id)
+                    }
+                })
+            }
 
-            newMessages = newMessages.map((message, index) => {
-                if (message.selected === true && message.labels.indexOf(label) !== -1) {
-                    let index;
-                    index = message.labels.indexOf(label);
-                    message.labels.splice(index, 1);
-                    // message.labels = message.labels.concat([label]) 
-                    message.selected = false;
-                    return message;
-                } else {
-                    return message;
-                }
-            })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'removeLabel',   
+                            label: label,                         
+                        })
+                })
 
+            const messages = await response.json()
             this.setState({
-                messageApiResponse: newMessages
+                messageApiResponse: messages
             })
         }
     }
 
     alertHandle = () => {
-
         return alert("Please select a message to use the toolbar items");
-
     }
 
 
