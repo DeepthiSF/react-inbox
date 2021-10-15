@@ -1,13 +1,16 @@
 import React from 'react';
 import MessageList from './MessageList';
 import messages from './MessageData';
+import ComposeMessageForm from './ComposeMessageForm';
 
 class Toolbar extends React.Component {
 
     constructor() {
         super()
         this.state = {
-            messageApiResponse: []
+            messageApiResponse: [],
+            composeMessageForm: null,
+            composeFormVisible: false,
         }
         this.finalSelectState = this.selectState();
     }
@@ -52,7 +55,7 @@ class Toolbar extends React.Component {
     unreadMessageCount = () => {
 
         console.log(this.state.messageApiResponse)
-        let newMessages = this.state.messageApiResponse.slice();   
+        let newMessages = this.state.messageApiResponse.slice();
         let unreadMessages = newMessages.filter((message) => {
             return message.read === false
         })
@@ -62,10 +65,10 @@ class Toolbar extends React.Component {
 
 
     toggleStarred = async (event) => {
-        let newMessages = this.state.messageApiResponse.slice();   
-        
+        let newMessages = this.state.messageApiResponse.slice();
+
         let indexOfMessage = event.target.id
-        let id = newMessages[indexOfMessage].id;     
+        let id = newMessages[indexOfMessage].id;
 
         const response = await fetch(`http://localhost:8082/api/messages`,
             {
@@ -257,16 +260,16 @@ class Toolbar extends React.Component {
 
 
     addLabel = async (label) => {
-        
+
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
-            let newMessages = this.state.messageApiResponse.slice();           
+            let newMessages = this.state.messageApiResponse.slice();
             let itemsSelected = [];
             if (label !== "Apply label") {
                 newMessages.map((message, index) => {
                     if (message.selected === true) {
-                        itemsSelected.push(message.id)                        
+                        itemsSelected.push(message.id)
                     }
                 })
             }
@@ -297,7 +300,7 @@ class Toolbar extends React.Component {
 
 
     removeLabel = async (label) => {
-        
+
         if (this.totalselectMessages()) {
             this.alertHandle();
         } else {
@@ -322,8 +325,8 @@ class Toolbar extends React.Component {
                     body: JSON.stringify(
                         {
                             messageIds: itemsSelected,
-                            command: 'removeLabel',   
-                            label: label,                         
+                            command: 'removeLabel',
+                            label: label,
                         })
                 })
 
@@ -338,6 +341,22 @@ class Toolbar extends React.Component {
         return alert("Please select a message to use the toolbar items");
     }
 
+    displayComposeMessageForm = () => {
+        
+        if(this.state.composeFormVisible === false){
+            this.setState({
+                composeMessageForm: <ComposeMessageForm />,
+                composeFormVisible: true,
+            })
+        } else{
+            this.setState({
+                composeMessageForm: null,
+                composeFormVisible: false,
+            })
+        }
+
+    }  
+
 
     render() {
 
@@ -351,9 +370,9 @@ class Toolbar extends React.Component {
                         unread messages
                     </p>
 
-                    <a class="btn btn-danger">
-                        <i class="fa fa-plus"></i>
-                    </a>                    
+                    <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>             
+                        <i className="fa fa-plus"></i>
+                    </a>
 
                     <button className="btn btn-default">
                         <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
@@ -385,6 +404,8 @@ class Toolbar extends React.Component {
                         <i className="fa fa-trash-o" onClick={this.handleDelete}></i>
                     </button>
                 </div>
+
+                {this.state.composeMessageForm}
 
                 <div>
                     <MessageList
