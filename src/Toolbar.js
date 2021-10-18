@@ -3,6 +3,9 @@ import MessageList from './MessageList';
 import ComposeMessageForm from './ComposeMessageForm';
 
 // Since Toolbar is a class component if any props are passed into this component then we have to use 'this.props.***' to access those props being passed
+// Since Toolbar.js maintains the state of all the components all the methods that will be used by the child components need to be declared in Toolbar.js and they 
+// should be passed to the child components vis props
+// Similaly we can use Toolbar.js to maintain the state of variables used by the chile component.
 
 class Toolbar extends React.Component {
 
@@ -18,6 +21,7 @@ class Toolbar extends React.Component {
         this.finalSelectState = this.selectState();
     }
 
+    // This method is used only if you want to load data on a page as soon as it loads. Because this method gets triggered only after the page is loaded and then loads the requested data
     componentDidMount() {
         fetch("http://localhost:8082/api/messages")
             .then(response => response.json())
@@ -30,6 +34,7 @@ class Toolbar extends React.Component {
 
     }
 
+    // To check if all the messages are selected or not
     selectState = () => {
 
         let selectValues = this.state.messageApiResponse.map((message) => {
@@ -40,6 +45,7 @@ class Toolbar extends React.Component {
         return allSelectedIsTrue;
     }
 
+    // To check if no messages are selected
     totalselectMessages = () => {
         let totalSelectMessages = 0;
         let newMessages = this.state.messageApiResponse.slice();
@@ -55,6 +61,7 @@ class Toolbar extends React.Component {
         }
     }
 
+    // To check how many messages are unread 
     unreadMessageCount = () => {
 
         console.log(this.state.messageApiResponse)
@@ -67,6 +74,7 @@ class Toolbar extends React.Component {
     }
 
 
+    // To Star and Unstar a message
     toggleStarred = async (event) => {
         let newMessages = this.state.messageApiResponse.slice();
 
@@ -92,6 +100,7 @@ class Toolbar extends React.Component {
         this.setState({ messageApiResponse: messages })
     }
 
+    // To select and deselect a message
     toggleSelected = (event) => {
         let id = event.target.id
         console.log(id)
@@ -103,7 +112,7 @@ class Toolbar extends React.Component {
         })
     }
 
-
+    // To select all the messages using the Select All button in the Toolbar
     handleSelectAll = () => {
 
         let newMessages = this.state.messageApiResponse.slice();
@@ -120,6 +129,7 @@ class Toolbar extends React.Component {
 
     }
 
+    // To De-select all the messages using the Select All button in the Toolbar
     handleDeSelectAll = () => {
 
         let newMessages = this.state.messageApiResponse.slice();
@@ -135,8 +145,7 @@ class Toolbar extends React.Component {
 
     }
 
-
-
+    // To determine the state of the Select All button on the Toolbar depending on how many messages are selected
     dynamicSelectButtonClassName = () => {
         let className = "fa"
         let newMessages = this.state.messageApiResponse.slice();
@@ -155,7 +164,7 @@ class Toolbar extends React.Component {
         return className;
     }
 
-
+    // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
     handleRead = async () => {
         if (this.totalselectMessages()) {
             this.alertHandle();
@@ -190,6 +199,7 @@ class Toolbar extends React.Component {
         }
     }
 
+    // To make the message state as 'Unread' state when the message is selected and 'Mark As Unread' button is clicked on the toolbar
     handleUnRead = async () => {
         if (this.totalselectMessages()) {
             this.alertHandle();
@@ -224,7 +234,7 @@ class Toolbar extends React.Component {
         }
     }
 
-
+    // To Delete a selected message/ messages
     handleDelete = async () => {
 
         if (this.totalselectMessages()) {
@@ -261,7 +271,7 @@ class Toolbar extends React.Component {
     }
 
 
-
+    // To add label to a selected message/messages
     addLabel = async (label) => {
 
         if (this.totalselectMessages()) {
@@ -301,7 +311,7 @@ class Toolbar extends React.Component {
 
     }
 
-
+    // To remove label on a selected message/messages
     removeLabel = async (label) => {
 
         if (this.totalselectMessages()) {
@@ -340,12 +350,15 @@ class Toolbar extends React.Component {
         }
     }
 
+
+    // To disable all the bottons on the Toolbar when no messages are selected
     alertHandle = () => {
         return alert("Please select a message to use the toolbar items");
     }
 
-    displayComposeMessageForm = () => {
-        
+    // To display the compose form when the red compose button is clicked on the toolbar
+    // and close the compose form when the same button is clicked again
+    displayComposeMessageForm = () => {        
         if(this.state.composeFormVisible === false){
             this.setState({
                 composeMessageForm: <ComposeMessageForm 
@@ -363,11 +376,15 @@ class Toolbar extends React.Component {
 
     } 
     
+    // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
+    // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
+    // For this we use event.target.value to grab the value entered in the target.
     onChange = (e) => {
         console.log("hello")
         this.setState({[e.target.name]: e.target.value})
     }
 
+    // To add a new message to the message list on the UI when the Send button is clicked on the compose form
     addMessageOnSubmit = async (e) => {
         e.preventDefault();
         let subject = this.state.subject;

@@ -4,6 +4,9 @@ const Message = (props) => {
     
     let dynamicClass = "row message"
 
+    // To check the status of an individual message whether it is read or selected and display the message accordingly.
+    // If the message is read then the message will not be in bold. If it is unread then it will be bold
+    // If message is selected then the background will b highlighted in yellow
     const dynamicClassName = () => {
           let dynamicClass = "row message"
         if (props.data.selected === true && props.data.read === true) {
