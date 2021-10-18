@@ -1,6 +1,5 @@
 import React from 'react';
 import MessageList from './MessageList';
-import messages from './MessageData';
 import ComposeMessageForm from './ComposeMessageForm';
 
 class Toolbar extends React.Component {
@@ -11,6 +10,8 @@ class Toolbar extends React.Component {
             messageApiResponse: [],
             composeMessageForm: null,
             composeFormVisible: false,
+            subject: "",
+            body: ""
         }
         this.finalSelectState = this.selectState();
     }
@@ -345,7 +346,10 @@ class Toolbar extends React.Component {
         
         if(this.state.composeFormVisible === false){
             this.setState({
-                composeMessageForm: <ComposeMessageForm />,
+                composeMessageForm: <ComposeMessageForm 
+                        onChange = {this.onChange}
+                        addMessageOnSubmit = {this.addMessageOnSubmit}
+                        />,
                 composeFormVisible: true,
             })
         } else{
@@ -355,7 +359,44 @@ class Toolbar extends React.Component {
             })
         }
 
-    }  
+    } 
+    
+    onChange = (e) => {
+        console.log("hello")
+        this.setState({[e.target.name]: e.target.value})
+    }
+
+    addMessageOnSubmit = async (e) => {
+        e.preventDefault();
+        let subject = this.state.subject;
+        let body = this.state.body;
+        const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            subject: subject,
+                            body: body,
+                            read: false,
+                            starred: false,
+                            labels: ["dev"],
+
+                        })
+                })
+
+            const newMessage = await response.json()
+            let newMessages = this.state.messageApiResponse.slice();
+            newMessages.push(newMessage)
+            this.setState({
+                messageApiResponse: newMessages,
+                composeMessageForm: null,
+                composeFormVisible: false,
+            })
+    }
 
 
     render() {
@@ -411,7 +452,7 @@ class Toolbar extends React.Component {
                     <MessageList
                         messages={this.state.messageApiResponse}
                         toggleStarred={this.toggleStarred}
-                        toggleSelected={this.toggleSelected}
+                        toggleSelected={this.toggleSelected}                  
                     />
                 </div>
             </div>
