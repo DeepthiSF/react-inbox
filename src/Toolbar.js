@@ -2,6 +2,8 @@ import React from 'react';
 import MessageList from './MessageList';
 import ComposeMessageForm from './ComposeMessageForm';
 
+// Since Toolbar is a class component if any props are passed into this component then we have to use 'this.props.***' to access those props being passed
+
 class Toolbar extends React.Component {
 
     constructor() {

@@ -1,3 +1,5 @@
+// Since this is a functional component we need to use 'props.***' to access the props/data being passed into this functional component
+
 const ComposeMessageForm = (props) => {
     return (
         <div>
