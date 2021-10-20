@@ -12,6 +12,14 @@ const messageApiResponseReducer = (state = [], action) => {
             state = action.response;
             return state;
 
+        case "SelectAll_Messages":
+            state = action.response;
+            return state;
+
+        case "DeSelectAll_Messages":
+            state = action.response;
+            return state;
+
         default:
             return state;
    }  

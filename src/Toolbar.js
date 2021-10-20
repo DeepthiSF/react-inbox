@@ -39,44 +39,44 @@ class Toolbar extends React.Component {
 
     }
 
-    // // // To check if all the messages are selected or not
-    // // selectState = () => {
+    // To check if all the messages are selected or not
+    selectState = () => {
 
-    // //     let selectValues = this.state.messageApiResponse.map((message) => {
-    // //         return message.selected
-    // //     })
-    // //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
+        let selectValues = this.props.apiResponse.map((message) => {
+            return message.selected
+        })
+        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
 
-    // //     return allSelectedIsTrue;
-    // // }
+        return allSelectedIsTrue;
+    }
 
-    // // // To check if no messages are selected
-    // // totalselectMessages = () => {
-    // //     let totalSelectMessages = 0;
-    // //     let newMessages = this.state.messageApiResponse.slice();
-    // //     let selectedMessages = newMessages.filter((message) => {
-    // //         return message.selected === true;
-    // //     })
+    // To check if no messages are selected
+    totalselectMessages = () => {
+        let totalSelectMessages = 0;
+        let newMessages = this.props.apiResponse.slice();
+        let selectedMessages = newMessages.filter((message) => {
+            return message.selected === true;
+        })
 
-    // //     totalSelectMessages = selectedMessages.length;
-    // //     if (totalSelectMessages === 0) {
-    // //         return true;
-    // //     } else {
-    // //         return false;
-    // //     }
-    // // }
+        totalSelectMessages = selectedMessages.length;
+        if (totalSelectMessages === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    // // // To check how many messages are unread 
-    // // unreadMessageCount = () => {
+    // To check how many messages are unread 
+    unreadMessageCount = () => {
 
-    // //     console.log(this.state.messageApiResponse)
-    // //     let newMessages = this.state.messageApiResponse.slice();
-    // //     let unreadMessages = newMessages.filter((message) => {
-    // //         return message.read === false
-    // //     })
-    // //     let unreadMessageCount;
-    // //     return unreadMessageCount = unreadMessages.length;
-    // // }
+        //console.log(this.state.messageApiResponse)
+        let newMessages = this.props.apiResponse.slice();
+        let unreadMessages = newMessages.filter((message) => {
+            return message.read === false
+        })
+        let unreadMessageCount;
+        return unreadMessageCount = unreadMessages.length;
+    }
 
 
     // To Star and Unstar a message
@@ -126,62 +126,77 @@ class Toolbar extends React.Component {
             response: newMessages
         }
         this.props.dispatch(myAction)
-        // this.setState({
-        //     messageApiResponse: newMessages
-        // })
     }
 
-    // // To select all the messages using the Select All button in the Toolbar
-    // handleSelectAll = () => {
+    // To select all the messages using the Select All button in the Toolbar
+    handleSelectAll = () => {
 
-    //     let newMessages = this.state.messageApiResponse.slice();
+        console.log("I am in select ALL")
+        let newMessages = [...this.props.apiResponse];
 
-    //     newMessages = newMessages.map((message) => {
-    //         return { ...message, selected: true }
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: true }
 
-    //     })
+        })
 
-    //     this.finalSelectState = true;
-    //     this.setState({
-    //         messageApiResponse: newMessages
-    //     })
+       // this.finalSelectState = true;
+        let myAction = {
+            type: "SelectAll_Messages",
+            response: newMessages
+        }
+        this.props.dispatch(myAction)
 
-    // }
+        let action = {
+            type: "AllMessagesSelected",
+            response: true
+        }
+        this.props.dispatch(action)
+        
 
-    // // To De-select all the messages using the Select All button in the Toolbar
-    // handleDeSelectAll = () => {
+    }
 
-    //     let newMessages = this.state.messageApiResponse.slice();
+    // To De-select all the messages using the Select All button in the Toolbar
+    handleDeSelectAll = () => {
+        console.log("I am in DE select ALL")
+        let newMessages = [...this.props.apiResponse];
 
-    //     newMessages = newMessages.map((message) => {
-    //         return { ...message, selected: false }
-    //     })
+        newMessages = newMessages.map((message) => {
+            return { ...message, selected: false }
+        })
 
-    //     this.finalSelectState = false;
-    //     this.setState({
-    //         messageApiResponse: newMessages
-    //     })
+       // this.finalSelectState = false;
+       let myAction = {
+        type: "DeSelectAll_Messages",
+        response: newMessages
+       }
 
-    // }
+       let action = {
+        type: "AllMessagesDeSelected",
+        response: false
+       }
+       this.props.dispatch(action)
+        
 
-    // // To determine the state of the Select All button on the Toolbar depending on how many messages are selected
-    // dynamicSelectButtonClassName = () => {
-    //     let className = "fa"
-    //     let newMessages = this.state.messageApiResponse.slice();
-    //     newMessages = newMessages.filter((message) => {
-    //         return message.selected === true;
-    //     })
+    }
 
-    //     if (newMessages.length === this.state.messageApiResponse.length) {
-    //         className += " fa-check-square-o"
-    //     } else if (newMessages.length < this.state.messageApiResponse.length && newMessages.length > 0) {
-    //         className += " fa-minus-square-o"
-    //     } else {
-    //         className += " fa-square-o"
-    //     }
+    // To determine the state of the Select All button on the Toolbar depending on how many messages are selected
+    dynamicSelectButtonClassName = () => {
+        let className = "fa"
+        let newMessages = [...this.props.apiResponse];
+        newMessages = newMessages.filter((message) => {
+            return message.selected === true;
+        })
 
-    //     return className;
-    // }
+        if (newMessages.length === this.props.apiResponse.length) {
+            className += " fa-check-square-o"
+        } else if (newMessages.length < this.props.apiResponse.length && newMessages.length > 0) {
+            className += " fa-minus-square-o"
+        } else {
+            className += " fa-square-o"
+        }
+
+        return className;
+    }
 
     // // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
     // handleRead = async () => {
@@ -441,7 +456,7 @@ class Toolbar extends React.Component {
             <div className="row toolbar">
                 <div className="col-md-12">
                     <p className="pull-right">
-                        {/* <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span> */}
+                        <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span>
                         <span className="badge badge" className='badge'></span>
                         <span className="badge badge" className='badge'></span>
                         <span className="badge badge" className='badge'></span>
@@ -454,7 +469,7 @@ class Toolbar extends React.Component {
                     </a>
 
                     <button className="btn btn-default">
-                        {/* <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i> */}
+                        <i className={this.dynamicSelectButtonClassName()} onClick={this.props.areAllMessagesSelected ? this.handleDeSelectAll : this.handleSelectAll}></i>
                         <i className ></i>
                     </button>
 
@@ -509,7 +524,8 @@ class Toolbar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        apiResponse: state.ApiResponse
+        apiResponse: state.ApiResponse,
+        areAllMessagesSelected: state.areAllMessagesSelected
     }
 }
 

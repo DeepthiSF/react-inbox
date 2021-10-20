@@ -10,11 +10,11 @@ const Message = (props) => {
     // If message is selected then the background will b highlighted in yellow
     const dynamicClassName = () => {
           let dynamicClass = "row message"
-        if (props.apiResponse.selected === true && props.apiResponse.read === true) {
+        if (props.apiResponse[props.index].selected === true && props.apiResponse[props.index].read === true) {
            dynamicClass += " read selected";
-        } else if (props.apiResponse.selected === true && props.apiResponse.read === false) {
+        } else if (props.apiResponse[props.index].selected === true && props.apiResponse[props.index].read === false) {
             dynamicClass += " unread selected";
-        } else if (props.apiResponse.read === true) {
+        } else if (props.apiResponse[props.index].read === true) {
             dynamicClass += " read"
         } else {
             dynamicClass += " unread"
@@ -24,75 +24,7 @@ const Message = (props) => {
 
     console.log(props)
 
-    // // To check if all the messages are selected or not
-    // selectState = () => {
-
-    //     let selectValues = this.state.messageApiResponse.map((message) => {
-    //         return message.selected
-    //     })
-    //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
-
-    //     return allSelectedIsTrue;
-    // }
-
-    // // To check if no messages are selected
-    // totalselectMessages = () => {
-    //     let totalSelectMessages = 0;
-    //     let newMessages = this.state.messageApiResponse.slice();
-    //     let selectedMessages = newMessages.filter((message) => {
-    //         return message.selected === true;
-    //     })
-
-    //     totalSelectMessages = selectedMessages.length;
-    //     if (totalSelectMessages === 0) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // // To check how many messages are unread 
-    // unreadMessageCount = () => {
-
-    //     console.log(this.state.messageApiResponse)
-    //     let newMessages = this.state.messageApiResponse.slice();
-    //     let unreadMessages = newMessages.filter((message) => {
-    //         return message.read === false
-    //     })
-    //     let unreadMessageCount;
-    //     return unreadMessageCount = unreadMessages.length;
-    // }
-
-
-    // // To Star and Unstar a message
-    // const toggleStarred = async (event) => {
-    //     let newMessages = props.apiResponse.slice();
-
-    //     let indexOfMessage = event.target.id
-    //     let id = newMessages[indexOfMessage].id;
-
-    //     const response = await fetch(`http://localhost:8082/api/messages`,
-    //         {
-    //             method: 'PATCH',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(
-    //                 {
-    //                     messageIds: [id],
-    //                     command: 'star',
-    //                 })
-
-    //         })
-
-    //     const messages = await response.json()
-    //     let myAction = {
-    //         type: "Starring_Message",
-    //         response: messages
-    //     }
-    //     this.props.dispatch(myAction)
-    // }
+    
 
     
     return (
