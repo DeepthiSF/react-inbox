@@ -1,82 +1,89 @@
 import React from 'react';
 import MessageList from './MessageList';
 import ComposeMessageForm from './ComposeMessageForm';
+import {connect} from 'react-redux'
+import { render } from '@testing-library/react';
 
-// Since Toolbar is a class component if any props are passed into this component then we have to use 'this.props.***' to access those props being passed
-// Since Toolbar.js maintains the state of all the components all the methods that will be used by the child components need to be declared in Toolbar.js and they 
-// should be passed to the child components vis props
-// Similaly we can use Toolbar.js to maintain the state of variables used by the chile component.
+// Implementing REDUX to this Inbox App
 
 class Toolbar extends React.Component {
+// const Toolbar = (props) = { 
 
-    constructor() {
-        super()
-        this.state = {
-            messageApiResponse: [],
-            composeMessageForm: null,
-            composeFormVisible: false,
-            subject: "",
-            body: ""
-        }
-        this.finalSelectState = this.selectState();
-    }
+    // constructor() {
+    //     super()
+    //     this.state = {
+    //         messageApiResponse: [],
+    //         composeMessageForm: null,
+    //         composeFormVisible: false,
+    //         subject: "",
+    //         body: ""
+    //     }
+    //     this.finalSelectState = this.selectState();
+    // }
 
     // This method is used only if you want to load data on a page as soon as it loads. Because this method gets triggered only after the page is loaded and then loads the requested data
-    componentDidMount() {
+    componentDidMount = () => {
         fetch("http://localhost:8082/api/messages")
             .then(response => response.json())
             .then((response) => {
                 console.log(response)
-                this.setState({
-                    messageApiResponse: response
-                })
+                // Actions always return an object
+                let myAction = {
+                    type: "Fetch_Response",
+                    response: response
+                }
+                this.props.dispatch(myAction)
             })
 
     }
 
-    // To check if all the messages are selected or not
-    selectState = () => {
+    // // // To check if all the messages are selected or not
+    // // selectState = () => {
 
-        let selectValues = this.state.messageApiResponse.map((message) => {
-            return message.selected
-        })
-        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
+    // //     let selectValues = this.state.messageApiResponse.map((message) => {
+    // //         return message.selected
+    // //     })
+    // //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
 
-        return allSelectedIsTrue;
-    }
+    // //     return allSelectedIsTrue;
+    // // }
 
-    // To check if no messages are selected
-    totalselectMessages = () => {
-        let totalSelectMessages = 0;
-        let newMessages = this.state.messageApiResponse.slice();
-        let selectedMessages = newMessages.filter((message) => {
-            return message.selected === true;
-        })
+    // // // To check if no messages are selected
+    // // totalselectMessages = () => {
+    // //     let totalSelectMessages = 0;
+    // //     let newMessages = this.state.messageApiResponse.slice();
+    // //     let selectedMessages = newMessages.filter((message) => {
+    // //         return message.selected === true;
+    // //     })
 
-        totalSelectMessages = selectedMessages.length;
-        if (totalSelectMessages === 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // //     totalSelectMessages = selectedMessages.length;
+    // //     if (totalSelectMessages === 0) {
+    // //         return true;
+    // //     } else {
+    // //         return false;
+    // //     }
+    // // }
 
-    // To check how many messages are unread 
-    unreadMessageCount = () => {
+    // // // To check how many messages are unread 
+    // // unreadMessageCount = () => {
 
-        console.log(this.state.messageApiResponse)
-        let newMessages = this.state.messageApiResponse.slice();
-        let unreadMessages = newMessages.filter((message) => {
-            return message.read === false
-        })
-        let unreadMessageCount;
-        return unreadMessageCount = unreadMessages.length;
-    }
+    // //     console.log(this.state.messageApiResponse)
+    // //     let newMessages = this.state.messageApiResponse.slice();
+    // //     let unreadMessages = newMessages.filter((message) => {
+    // //         return message.read === false
+    // //     })
+    // //     let unreadMessageCount;
+    // //     return unreadMessageCount = unreadMessages.length;
+    // // }
 
 
     // To Star and Unstar a message
     toggleStarred = async (event) => {
-        let newMessages = this.state.messageApiResponse.slice();
+
+        console.log(this.props.apiResponse)
+        
+        let newMessages = [...this.props.apiResponse];
+        //let newMessages = this.props.apiResponse];
 
         let indexOfMessage = event.target.id
         let id = newMessages[indexOfMessage].id;
@@ -97,363 +104,373 @@ class Toolbar extends React.Component {
             })
 
         const messages = await response.json()
-        this.setState({ messageApiResponse: messages })
-    }
-
-    // To select and deselect a message
-    toggleSelected = (event) => {
-        let id = event.target.id
-        console.log(id)
-
-        let newMessages = this.state.messageApiResponse.slice();
-        newMessages[id].selected = !newMessages[id].selected;
-        this.setState({
-            messageApiResponse: newMessages
-        })
-    }
-
-    // To select all the messages using the Select All button in the Toolbar
-    handleSelectAll = () => {
-
-        let newMessages = this.state.messageApiResponse.slice();
-
-        newMessages = newMessages.map((message) => {
-            return { ...message, selected: true }
-
-        })
-
-        this.finalSelectState = true;
-        this.setState({
-            messageApiResponse: newMessages
-        })
-
-    }
-
-    // To De-select all the messages using the Select All button in the Toolbar
-    handleDeSelectAll = () => {
-
-        let newMessages = this.state.messageApiResponse.slice();
-
-        newMessages = newMessages.map((message) => {
-            return { ...message, selected: false }
-        })
-
-        this.finalSelectState = false;
-        this.setState({
-            messageApiResponse: newMessages
-        })
-
-    }
-
-    // To determine the state of the Select All button on the Toolbar depending on how many messages are selected
-    dynamicSelectButtonClassName = () => {
-        let className = "fa"
-        let newMessages = this.state.messageApiResponse.slice();
-        newMessages = newMessages.filter((message) => {
-            return message.selected === true;
-        })
-
-        if (newMessages.length === this.state.messageApiResponse.length) {
-            className += " fa-check-square-o"
-        } else if (newMessages.length < this.state.messageApiResponse.length && newMessages.length > 0) {
-            className += " fa-minus-square-o"
-        } else {
-            className += " fa-square-o"
+        console.log(messages)
+        let myAction = {
+            type: "Starring_Message",
+            response: messages
         }
-
-        return className;
+        this.props.dispatch(myAction)
     }
 
-    // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
-    handleRead = async () => {
-        if (this.totalselectMessages()) {
-            this.alertHandle();
-        } else {
-            let newMessages = this.state.messageApiResponse.slice();
-            let itemsSelected = [];
-            newMessages.map((message) => {
-                if (message.selected === true) {
-                    itemsSelected.push(message.id)
-                }
-            })
-            console.log(itemsSelected)
-            const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            messageIds: itemsSelected,
-                            command: 'read',
-                            read: true,
-                        })
-                })
+    // // To select and deselect a message
+    // toggleSelected = (event) => {
+    //     let id = event.target.id
+    //     console.log(id)
 
-            const messages = await response.json()
-            this.setState({
-                messageApiResponse: messages
-            })
-        }
-    }
+    //     let newMessages = this.state.messageApiResponse.slice();
+    //     newMessages[id].selected = !newMessages[id].selected;
+    //     this.setState({
+    //         messageApiResponse: newMessages
+    //     })
+    // }
 
-    // To make the message state as 'Unread' state when the message is selected and 'Mark As Unread' button is clicked on the toolbar
-    handleUnRead = async () => {
-        if (this.totalselectMessages()) {
-            this.alertHandle();
-        } else {
-            let newMessages = this.state.messageApiResponse.slice();
-            let itemsSelected = [];
-            newMessages.map((message) => {
-                if (message.selected === true) {
-                    itemsSelected.push(message.id)
-                }
-            })
-            console.log(itemsSelected)
-            const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            messageIds: itemsSelected,
-                            command: 'read',
-                            read: false,
-                        })
-                })
+    // // To select all the messages using the Select All button in the Toolbar
+    // handleSelectAll = () => {
 
-            const messages = await response.json()
-            this.setState({
-                messageApiResponse: messages
-            })
-        }
-    }
+    //     let newMessages = this.state.messageApiResponse.slice();
 
-    // To Delete a selected message/ messages
-    handleDelete = async () => {
+    //     newMessages = newMessages.map((message) => {
+    //         return { ...message, selected: true }
 
-        if (this.totalselectMessages()) {
-            this.alertHandle();
-        } else {
-            let newMessages = this.state.messageApiResponse.slice();
-            let itemsSelected = [];
-            newMessages.map((message) => {
-                if (message.selected === true) {
-                    itemsSelected.push(message.id)
-                }
-            })
-            console.log(itemsSelected)
-            const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            messageIds: itemsSelected,
-                            command: 'delete',
-                        })
-                })
+    //     })
 
-            const messages = await response.json()
-            this.setState({
-                messageApiResponse: messages
-            })
-        }
+    //     this.finalSelectState = true;
+    //     this.setState({
+    //         messageApiResponse: newMessages
+    //     })
 
-    }
+    // }
 
+    // // To De-select all the messages using the Select All button in the Toolbar
+    // handleDeSelectAll = () => {
 
-    // To add label to a selected message/messages
-    addLabel = async (label) => {
+    //     let newMessages = this.state.messageApiResponse.slice();
 
-        if (this.totalselectMessages()) {
-            this.alertHandle();
-        } else {
-            let newMessages = this.state.messageApiResponse.slice();
-            let itemsSelected = [];
-            if (label !== "Apply label") {
-                newMessages.map((message, index) => {
-                    if (message.selected === true) {
-                        itemsSelected.push(message.id)
-                    }
-                })
-            }
+    //     newMessages = newMessages.map((message) => {
+    //         return { ...message, selected: false }
+    //     })
 
-            console.log(itemsSelected)
-            const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            messageIds: itemsSelected,
-                            command: 'addLabel',
-                            label: label,
-                        })
-                })
+    //     this.finalSelectState = false;
+    //     this.setState({
+    //         messageApiResponse: newMessages
+    //     })
 
-            const messages = await response.json()
-            this.setState({
-                messageApiResponse: messages
-            })
-        }
+    // }
 
-    }
+    // // To determine the state of the Select All button on the Toolbar depending on how many messages are selected
+    // dynamicSelectButtonClassName = () => {
+    //     let className = "fa"
+    //     let newMessages = this.state.messageApiResponse.slice();
+    //     newMessages = newMessages.filter((message) => {
+    //         return message.selected === true;
+    //     })
 
-    // To remove label on a selected message/messages
-    removeLabel = async (label) => {
+    //     if (newMessages.length === this.state.messageApiResponse.length) {
+    //         className += " fa-check-square-o"
+    //     } else if (newMessages.length < this.state.messageApiResponse.length && newMessages.length > 0) {
+    //         className += " fa-minus-square-o"
+    //     } else {
+    //         className += " fa-square-o"
+    //     }
 
-        if (this.totalselectMessages()) {
-            this.alertHandle();
-        } else {
-            let newMessages = this.state.messageApiResponse.slice();
-            let itemsSelected = [];
-            if (label !== "Apply label") {
-                newMessages.map((message, index) => {
-                    if (message.selected === true) {
-                        itemsSelected.push(message.id)
-                    }
-                })
-            }
+    //     return className;
+    // }
 
-            console.log(itemsSelected)
-            const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            messageIds: itemsSelected,
-                            command: 'removeLabel',
-                            label: label,
-                        })
-                })
+    // // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
+    // handleRead = async () => {
+    //     if (this.totalselectMessages()) {
+    //         this.alertHandle();
+    //     } else {
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         let itemsSelected = [];
+    //         newMessages.map((message) => {
+    //             if (message.selected === true) {
+    //                 itemsSelected.push(message.id)
+    //             }
+    //         })
+    //         console.log(itemsSelected)
+    //         const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'PATCH',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         messageIds: itemsSelected,
+    //                         command: 'read',
+    //                         read: true,
+    //                     })
+    //             })
 
-            const messages = await response.json()
-            this.setState({
-                messageApiResponse: messages
-            })
-        }
-    }
+    //         const messages = await response.json()
+    //         this.setState({
+    //             messageApiResponse: messages
+    //         })
+    //     }
+    // }
+
+    // // To make the message state as 'Unread' state when the message is selected and 'Mark As Unread' button is clicked on the toolbar
+    // handleUnRead = async () => {
+    //     if (this.totalselectMessages()) {
+    //         this.alertHandle();
+    //     } else {
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         let itemsSelected = [];
+    //         newMessages.map((message) => {
+    //             if (message.selected === true) {
+    //                 itemsSelected.push(message.id)
+    //             }
+    //         })
+    //         console.log(itemsSelected)
+    //         const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'PATCH',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         messageIds: itemsSelected,
+    //                         command: 'read',
+    //                         read: false,
+    //                     })
+    //             })
+
+    //         const messages = await response.json()
+    //         this.setState({
+    //             messageApiResponse: messages
+    //         })
+    //     }
+    // }
+
+    // // To Delete a selected message/ messages
+    // handleDelete = async () => {
+
+    //     if (this.totalselectMessages()) {
+    //         this.alertHandle();
+    //     } else {
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         let itemsSelected = [];
+    //         newMessages.map((message) => {
+    //             if (message.selected === true) {
+    //                 itemsSelected.push(message.id)
+    //             }
+    //         })
+    //         console.log(itemsSelected)
+    //         const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'PATCH',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         messageIds: itemsSelected,
+    //                         command: 'delete',
+    //                     })
+    //             })
+
+    //         const messages = await response.json()
+    //         this.setState({
+    //             messageApiResponse: messages
+    //         })
+    //     }
+
+    // }
 
 
-    // To disable all the bottons on the Toolbar when no messages are selected
-    alertHandle = () => {
-        return alert("Please select a message to use the toolbar items");
-    }
+    // // To add label to a selected message/messages
+    // addLabel = async (label) => {
 
-    // To display the compose form when the red compose button is clicked on the toolbar
-    // and close the compose form when the same button is clicked again
-    displayComposeMessageForm = () => {        
-        if(this.state.composeFormVisible === false){
-            this.setState({
-                composeMessageForm: <ComposeMessageForm 
-                        onChange = {this.onChange}
-                        addMessageOnSubmit = {this.addMessageOnSubmit}
-                        />,
-                composeFormVisible: true,
-            })
-        } else{
-            this.setState({
-                composeMessageForm: null,
-                composeFormVisible: false,
-            })
-        }
+    //     if (this.totalselectMessages()) {
+    //         this.alertHandle();
+    //     } else {
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         let itemsSelected = [];
+    //         if (label !== "Apply label") {
+    //             newMessages.map((message, index) => {
+    //                 if (message.selected === true) {
+    //                     itemsSelected.push(message.id)
+    //                 }
+    //             })
+    //         }
 
-    } 
+    //         console.log(itemsSelected)
+    //         const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'PATCH',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         messageIds: itemsSelected,
+    //                         command: 'addLabel',
+    //                         label: label,
+    //                     })
+    //             })
+
+    //         const messages = await response.json()
+    //         this.setState({
+    //             messageApiResponse: messages
+    //         })
+    //     }
+
+    // }
+
+    // // To remove label on a selected message/messages
+    // removeLabel = async (label) => {
+
+    //     if (this.totalselectMessages()) {
+    //         this.alertHandle();
+    //     } else {
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         let itemsSelected = [];
+    //         if (label !== "Apply label") {
+    //             newMessages.map((message, index) => {
+    //                 if (message.selected === true) {
+    //                     itemsSelected.push(message.id)
+    //                 }
+    //             })
+    //         }
+
+    //         console.log(itemsSelected)
+    //         const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'PATCH',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         messageIds: itemsSelected,
+    //                         command: 'removeLabel',
+    //                         label: label,
+    //                     })
+    //             })
+
+    //         const messages = await response.json()
+    //         this.setState({
+    //             messageApiResponse: messages
+    //         })
+    //     }
+    // }
+
+
+    // // To disable all the bottons on the Toolbar when no messages are selected
+    // alertHandle = () => {
+    //     return alert("Please select a message to use the toolbar items");
+    // }
+
+    // // To display the compose form when the red compose button is clicked on the toolbar
+    // // and close the compose form when the same button is clicked again
+    // displayComposeMessageForm = () => {        
+    //     if(this.state.composeFormVisible === false){
+    //         this.setState({
+    //             composeMessageForm: <ComposeMessageForm 
+    //                     onChange = {this.onChange}
+    //                     addMessageOnSubmit = {this.addMessageOnSubmit}
+    //                     />,
+    //             composeFormVisible: true,
+    //         })
+    //     } else{
+    //         this.setState({
+    //             composeMessageForm: null,
+    //             composeFormVisible: false,
+    //         })
+    //     }
+
+    // } 
     
-    // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
-    // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
-    // For this we use event.target.value to grab the value entered in the target.
-    onChange = (e) => {
-        console.log("hello")
-        this.setState({[e.target.name]: e.target.value})
-    }
+    // // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
+    // // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
+    // // For this we use event.target.value to grab the value entered in the target.
+    // onChange = (e) => {
+    //     console.log("hello")
+    //     this.setState({[e.target.name]: e.target.value})
+    // }
 
-    // To add a new message to the message list on the UI when the Send button is clicked on the compose form
-    addMessageOnSubmit = async (e) => {
-        e.preventDefault();
-        let subject = this.state.subject;
-        let body = this.state.body;
-        const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            subject: subject,
-                            body: body,
-                            read: false,
-                            starred: false,
-                            labels: ["dev"],
+    // // To add a new message to the message list on the UI when the Send button is clicked on the compose form
+    // addMessageOnSubmit = async (e) => {
+    //     e.preventDefault();
+    //     let subject = this.state.subject;
+    //     let body = this.state.body;
+    //     const response = await fetch('http://localhost:8082/api/messages',
+    //             {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Accept': 'application/json',
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(
+    //                     {
+    //                         subject: subject,
+    //                         body: body,
+    //                         read: false,
+    //                         starred: false,
+    //                         labels: ["dev"],
 
-                        })
-                })
+    //                     })
+    //             })
 
-            const newMessage = await response.json()
-            let newMessages = this.state.messageApiResponse.slice();
-            newMessages.push(newMessage)
-            this.setState({
-                messageApiResponse: newMessages,
-                composeMessageForm: null,
-                composeFormVisible: false,
-            })
-    }
-
-
+    //         const newMessage = await response.json()
+    //         let newMessages = this.state.messageApiResponse.slice();
+    //         newMessages.push(newMessage)
+    //         this.setState({
+    //             messageApiResponse: newMessages,
+    //             composeMessageForm: null,
+    //             composeFormVisible: false,
+    //         })
+    // }
+   
     render() {
-
         return (
             <div className="row toolbar">
                 <div className="col-md-12">
                     <p className="pull-right">
-                        <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span>
+                        {/* <span className="badge badge" className='badge'>{this.unreadMessageCount()}</span> */}
+                        <span className="badge badge" className='badge'></span>
                         <span className="badge badge" className='badge'></span>
                         <span className="badge badge" className='badge'></span>
                         unread messages
                     </p>
 
-                    <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>             
+                    {/* <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>              */}
+                    <a className="btn btn-danger" >
                         <i className="fa fa-plus"></i>
                     </a>
 
                     <button className="btn btn-default">
-                        <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i>
+                        {/* <i className={this.dynamicSelectButtonClassName()} onClick={this.finalSelectState ? this.handleDeSelectAll : this.handleSelectAll}></i> */}
+                        <i className ></i>
                     </button>
 
-                    <button className="btn btn-default" onClick={this.handleRead}>
+                    {/* <button className="btn btn-default" onClick={this.handleRead}> */}
+                    <button className="btn btn-default" >
                         Mark As Read
                     </button>
 
-                    <button className="btn btn-default" onClick={this.handleUnRead}>
+                    {/* <button className="btn btn-default" onClick={this.handleUnRead}> */}
+                    <button className="btn btn-default">
                         Mark As Unread
                     </button>
 
-                    <select className="form-control label-select" onChange={(e) => this.addLabel(e.target.value)}>
+                    {/* <select className="form-control label-select" onChange={(e) => this.addLabel(e.target.value)}> */}
+                    <select className="form-control label-select" >
                         <option>Apply label</option>
                         <option value="dev">dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
                     </select>
 
-                    <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
+                    {/* <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}> */}
+                    <select className="form-control label-select" >
                         <option>Remove Label </option>
                         <option value="dev" >dev</option>
                         <option value="personal">personal</option>
@@ -461,23 +478,32 @@ class Toolbar extends React.Component {
                     </select>
 
                     <button className="btn btn-default">
-                        <i className="fa fa-trash-o" onClick={this.handleDelete}></i>
+                        {/* <i className="fa fa-trash-o" onClick={this.handleDelete}></i> */}
+                        <i className="fa fa-trash-o"></i>
                     </button>
                 </div>
 
-                {this.state.composeMessageForm}
+                {/* {this.state.composeMessageForm} */}
 
                 <div>
                     <MessageList
-                        messages={this.state.messageApiResponse}
+                        // messages={this.state.messageApiResponse}
                         toggleStarred={this.toggleStarred}
-                        toggleSelected={this.toggleSelected}                  
+                        // toggleSelected={this.toggleSelected}                  
                     />
                 </div>
             </div>
 
         )
     }
+      
+}
+    
+
+const mapStateToProps = (state) => {
+    return {
+        apiResponse: state.ApiResponse
+    }
 }
 
-export default Toolbar;
+export default connect(mapStateToProps)(Toolbar);
