@@ -104,11 +104,10 @@ const Message = (props) => {
                     <div className="row">
                         <div className="col-xs-2">
                             <input id={(props.index)} type="checkbox"
-                                // checked={props.data.selected? "checked":""} onChange={props.toggleSelected}/>                                
-                                checked={props.apiResponse.selected? "checked":""} /> 
+                                checked={props.apiResponse[props.index].selected? "checked":""} onChange={props.toggleSelected}/>                                
+                                
                         </div>
                         <div className="col-xs-2">
-                            {/* <i id={(props.index)} className={props.data.starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.toggleStarred}></i> */}
                             <i id={(props.index)} className={props.apiResponse[props.index].starred ? "star fa fa-star" : "star fa fa-star-o"} onClick={props.toggleStarred} ></i>
                         </div>
                     </div>

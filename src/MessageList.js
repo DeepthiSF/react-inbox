@@ -20,7 +20,7 @@ function MessageList(props) {
         data= {message}
         index = {index}
         toggleStarred={props.toggleStarred}
-        // toggleSelected={props.toggleSelected}
+        toggleSelected={props.toggleSelected}
         />
     })
 

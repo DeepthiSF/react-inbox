@@ -6,6 +6,8 @@ import { render } from '@testing-library/react';
 
 // Implementing REDUX to this Inbox App
 
+// The Toolbar component should still be a Class component even though it is not maintaining any state because it is using Life cycle methods like
+// componentDidMount()
 class Toolbar extends React.Component {
 // const Toolbar = (props) = { 
 
@@ -82,8 +84,8 @@ class Toolbar extends React.Component {
 
         console.log(this.props.apiResponse)
         
+        // getting a copy of the current array of messages returned from the API
         let newMessages = [...this.props.apiResponse];
-        //let newMessages = this.props.apiResponse];
 
         let indexOfMessage = event.target.id
         let id = newMessages[indexOfMessage].id;
@@ -112,17 +114,22 @@ class Toolbar extends React.Component {
         this.props.dispatch(myAction)
     }
 
-    // // To select and deselect a message
-    // toggleSelected = (event) => {
-    //     let id = event.target.id
-    //     console.log(id)
+    // To select and deselect a message
+    toggleSelected = (event) => {
+        let id = event.target.id
+        console.log(id)
 
-    //     let newMessages = this.state.messageApiResponse.slice();
-    //     newMessages[id].selected = !newMessages[id].selected;
-    //     this.setState({
-    //         messageApiResponse: newMessages
-    //     })
-    // }
+        let newMessages = [...this.props.apiResponse];
+        newMessages[id].selected = !newMessages[id].selected;
+        let myAction = {
+            type: "Select_Message",
+            response: newMessages
+        }
+        this.props.dispatch(myAction)
+        // this.setState({
+        //     messageApiResponse: newMessages
+        // })
+    }
 
     // // To select all the messages using the Select All button in the Toolbar
     // handleSelectAll = () => {
@@ -489,7 +496,7 @@ class Toolbar extends React.Component {
                     <MessageList
                         // messages={this.state.messageApiResponse}
                         toggleStarred={this.toggleStarred}
-                        // toggleSelected={this.toggleSelected}                  
+                        toggleSelected={this.toggleSelected}                  
                     />
                 </div>
             </div>
