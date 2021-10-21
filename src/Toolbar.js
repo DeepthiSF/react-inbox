@@ -36,6 +36,7 @@ class Toolbar extends React.Component {
                 }
                 this.props.dispatch(myAction)
             })
+            
 
     }
 
@@ -401,25 +402,31 @@ class Toolbar extends React.Component {
         return alert("Please select a message to use the toolbar items");
     }
 
-    // // To display the compose form when the red compose button is clicked on the toolbar
-    // // and close the compose form when the same button is clicked again
-    // displayComposeMessageForm = () => {        
-    //     if(this.state.composeFormVisible === false){
-    //         this.setState({
-    //             composeMessageForm: <ComposeMessageForm 
-    //                     onChange = {this.onChange}
-    //                     addMessageOnSubmit = {this.addMessageOnSubmit}
-    //                     />,
-    //             composeFormVisible: true,
-    //         })
-    //     } else{
-    //         this.setState({
-    //             composeMessageForm: null,
-    //             composeFormVisible: false,
-    //         })
-    //     }
+    // To display the compose form when the red compose button is clicked on the toolbar
+    // and close the compose form when the same button is clicked again
+    displayComposeMessageForm = () => {        
+       // console.log(this.props.composeFormVisible)
+        if(this.props.composeFormVisible === false){
+            let myAction = {
+                type: "OpenComposeForm",
+                visible: true,
+                form: <ComposeMessageForm 
+                // onChange = {this.onChange}
+                // addMessageOnSubmit = {this.addMessageOnSubmit}
+                />,
+            }
+            this.props.dispatch(myAction)           
+        } else{
+            let action = {
+                type: "CloseComposeForm",
+                visible: false,
+                form: null
+            }
+            this.props.dispatch(action)
+           
+        }
 
-    // } 
+    } 
     
     // // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
     // // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
@@ -463,6 +470,7 @@ class Toolbar extends React.Component {
     // }
    
     render() {
+        console.log(this)
         return (
             <div className="row toolbar">
                 <div className="col-md-12">
@@ -474,8 +482,7 @@ class Toolbar extends React.Component {
                         unread messages
                     </p>
 
-                    {/* <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>              */}
-                    <a className="btn btn-danger" >
+                    <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>             
                         <i className="fa fa-plus"></i>
                     </a>
 
@@ -511,7 +518,7 @@ class Toolbar extends React.Component {
                     </button>
                 </div>
 
-                {/* {this.state.composeMessageForm} */}
+                {this.props.composeForm}
 
                 <div>
                     <MessageList
@@ -531,7 +538,9 @@ class Toolbar extends React.Component {
 const mapStateToProps = (state) => {
     return {
         apiResponse: state.ApiResponse,
-        areAllMessagesSelected: state.areAllMessagesSelected
+        areAllMessagesSelected: state.areAllMessagesSelected,
+        composeFormVisible: state.composeFormReducer.visible,
+        composeForm : state.composeFormReducer.form
     }
 }
 
