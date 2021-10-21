@@ -272,121 +272,128 @@ class Toolbar extends React.Component {
         }
     }
 
-    // // To Delete a selected message/ messages
-    // handleDelete = async () => {
+    // To Delete a selected message/ messages
+    handleDelete = async () => {
 
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         let itemsSelected = [];
-    //         newMessages.map((message) => {
-    //             if (message.selected === true) {
-    //                 itemsSelected.push(message.id)
-    //             }
-    //         })
-    //         console.log(itemsSelected)
-    //         const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'PATCH',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         messageIds: itemsSelected,
-    //                         command: 'delete',
-    //                     })
-    //             })
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.props.apiResponse.slice();
+            let itemsSelected = [];
+            newMessages.map((message) => {
+                if (message.selected === true) {
+                    itemsSelected.push(message.id)
+                }
+            })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'delete',
+                        })
+                })
 
-    //         const messages = await response.json()
-    //         this.setState({
-    //             messageApiResponse: messages
-    //         })
-    //     }
+            const messages = await response.json()
+            let myAction = {
+                type: "DeleteMessages",
+                response: messages
+            }
+            this.props.dispatch(myAction)
+            
+        }
 
-    // }
+    }
 
 
-    // // To add label to a selected message/messages
-    // addLabel = async (label) => {
+    // To add label to a selected message/messages
+    addLabel = async (label) => {
 
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         let itemsSelected = [];
-    //         if (label !== "Apply label") {
-    //             newMessages.map((message, index) => {
-    //                 if (message.selected === true) {
-    //                     itemsSelected.push(message.id)
-    //                 }
-    //             })
-    //         }
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.props.apiResponse.slice();
+            let itemsSelected = [];
+            if (label !== "Apply label") {
+                newMessages.map((message, index) => {
+                    if (message.selected === true) {
+                        itemsSelected.push(message.id)
+                    }
+                })
+            }
 
-    //         console.log(itemsSelected)
-    //         const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'PATCH',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         messageIds: itemsSelected,
-    //                         command: 'addLabel',
-    //                         label: label,
-    //                     })
-    //             })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'addLabel',
+                            label: label,
+                        })
+                })
 
-    //         const messages = await response.json()
-    //         this.setState({
-    //             messageApiResponse: messages
-    //         })
-    //     }
+            const messages = await response.json()
+            let myAction = {
+                type: "AddLabel",
+                response: messages
+            }
+            this.props.dispatch(myAction)
+        }
 
-    // }
+    }
 
-    // // To remove label on a selected message/messages
-    // removeLabel = async (label) => {
+    // To remove label on a selected message/messages
+    removeLabel = async (label) => {
 
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         let itemsSelected = [];
-    //         if (label !== "Apply label") {
-    //             newMessages.map((message, index) => {
-    //                 if (message.selected === true) {
-    //                     itemsSelected.push(message.id)
-    //                 }
-    //             })
-    //         }
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.props.apiResponse.slice();
+            let itemsSelected = [];
+            if (label !== "Apply label") {
+                newMessages.map((message, index) => {
+                    if (message.selected === true) {
+                        itemsSelected.push(message.id)
+                    }
+                })
+            }
 
-    //         console.log(itemsSelected)
-    //         const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'PATCH',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         messageIds: itemsSelected,
-    //                         command: 'removeLabel',
-    //                         label: label,
-    //                     })
-    //             })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'removeLabel',
+                            label: label,
+                        })
+                })
 
-    //         const messages = await response.json()
-    //         this.setState({
-    //             messageApiResponse: messages
-    //         })
-    //     }
-    // }
+            const messages = await response.json()
+            let myAction = {
+                type: "DeleteLabel",
+                response: messages
+            }
+            this.props.dispatch(myAction)
+        }
+    }
 
 
     // To disable all the bottons on the Toolbar when no messages are selected
@@ -485,16 +492,14 @@ class Toolbar extends React.Component {
                         Mark As Unread
                     </button>
 
-                    {/* <select className="form-control label-select" onChange={(e) => this.addLabel(e.target.value)}> */}
-                    <select className="form-control label-select" >
+                    <select className="form-control label-select" onChange={(e) => this.addLabel(e.target.value)}>
                         <option>Apply label</option>
                         <option value="dev">dev</option>
                         <option value="personal">personal</option>
                         <option value="gschool">gschool</option>
                     </select>
 
-                    {/* <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}> */}
-                    <select className="form-control label-select" >
+                    <select className="form-control label-select" onChange={(e) => this.removeLabel(e.target.value)}>
                         <option>Remove Label </option>
                         <option value="dev" >dev</option>
                         <option value="personal">personal</option>
@@ -502,8 +507,7 @@ class Toolbar extends React.Component {
                     </select>
 
                     <button className="btn btn-default">
-                        {/* <i className="fa fa-trash-o" onClick={this.handleDelete}></i> */}
-                        <i className="fa fa-trash-o"></i>
+                        <i className="fa fa-trash-o" onClick={this.handleDelete}></i>
                     </button>
                 </div>
 

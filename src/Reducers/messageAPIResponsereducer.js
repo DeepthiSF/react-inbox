@@ -28,6 +28,18 @@ const messageApiResponseReducer = (state = [], action) => {
              state = action.response;            
              return state;
 
+        case "DeleteMessages":              
+             state = action.response;            
+             return state;
+
+        case "AddLabel":              
+             state = action.response;            
+             return state;
+
+        case "DeleteLabel":              
+             state = action.response;            
+             return state;
+
         default:
             return state;
    }  
