@@ -9,19 +9,6 @@ import { render } from '@testing-library/react';
 // The Toolbar component should still be a Class component even though it is not maintaining any state because it is using Life cycle methods like
 // componentDidMount()
 class Toolbar extends React.Component {
-// const Toolbar = (props) = { 
-
-    // constructor() {
-    //     super()
-    //     this.state = {
-    //         messageApiResponse: [],
-    //         composeMessageForm: null,
-    //         composeFormVisible: false,
-    //         subject: "",
-    //         body: ""
-    //     }
-    //     this.finalSelectState = this.selectState();
-    // }
 
     // This method is used only if you want to load data on a page as soon as it loads. Because this method gets triggered only after the page is loaded and then loads the requested data
     componentDidMount = () => {
@@ -439,7 +426,6 @@ class Toolbar extends React.Component {
             value: e.target.value
         }
         this.props.dispatch(myAction)
-        //this.setState({[e.target.name]: e.target.value})
     }
 
     onChangeBody = (e) => {
@@ -449,7 +435,6 @@ class Toolbar extends React.Component {
             value: e.target.value
         }
         this.props.dispatch(action)
-        //this.setState({[e.target.name]: e.target.value})
     }
 
     // To add a new message to the message list on the UI when the Send button is clicked on the compose form
@@ -545,7 +530,6 @@ class Toolbar extends React.Component {
 
                 <div>
                     <MessageList
-                        // messages={this.state.messageApiResponse}
                         toggleStarred={this.toggleStarred}
                         toggleSelected={this.toggleSelected}                  
                     />
