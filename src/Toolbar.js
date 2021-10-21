@@ -1,7 +1,7 @@
 import React from 'react';
 import MessageList from './MessageList';
 import ComposeMessageForm from './ComposeMessageForm';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { render } from '@testing-library/react';
 
 // Implementing REDUX to this Inbox App
@@ -23,20 +23,9 @@ class Toolbar extends React.Component {
                 }
                 this.props.dispatch(myAction)
             })
-            
+
 
     }
-
-    // // To check if all the messages are selected or not
-    // selectState = () => {
-
-    //     let selectValues = this.props.apiResponse.map((message) => {
-    //         return message.selected
-    //     })
-    //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
-
-    //     return allSelectedIsTrue;
-    // }
 
     // To check if no messages are selected
     totalselectMessages = () => {
@@ -70,7 +59,7 @@ class Toolbar extends React.Component {
     toggleStarred = async (event) => {
 
         console.log(this.props.apiResponse)
-        
+
         // getting a copy of the current array of messages returned from the API
         let newMessages = [...this.props.apiResponse];
 
@@ -98,13 +87,15 @@ class Toolbar extends React.Component {
             type: "Starring_Message",
             response: messages
         }
+        // this will dispatch this action to the Store and then the Reducer based on the action type name will
+        // will act accordingly.
         this.props.dispatch(myAction)
     }
 
     // To select and deselect a message
     toggleSelected = (event) => {
         let id = event.target.id
-       // console.log(id)
+        // console.log(id)
 
         let newMessages = [...this.props.apiResponse];
         newMessages[id].selected = !newMessages[id].selected;
@@ -137,13 +128,13 @@ class Toolbar extends React.Component {
             response: false
         }
         this.props.dispatch(selectAction)
-        
+
 
     }
 
     // To De-select all the messages using the Select All button in the Toolbar
     handleDeSelectAll = () => {
-        
+
         let newMessages = [...this.props.apiResponse];
 
         newMessages = newMessages.map((message) => {
@@ -151,17 +142,17 @@ class Toolbar extends React.Component {
         })
 
         let myAction = {
-        type: "DeSelectAll_Messages",
-        response: newMessages
-       }
-       this.props.dispatch(myAction)
-     
-       let deSelectAction = {
-        type: "AllMessagesDeSelected",
-        response: true
-       }
-       this.props.dispatch(deSelectAction)
-        
+            type: "DeSelectAll_Messages",
+            response: newMessages
+        }
+        this.props.dispatch(myAction)
+
+        let deSelectAction = {
+            type: "AllMessagesDeSelected",
+            response: true
+        }
+        this.props.dispatch(deSelectAction)
+
 
     }
 
@@ -196,7 +187,7 @@ class Toolbar extends React.Component {
                     itemsSelected.push(message.id)
                 }
             })
-           // console.log(itemsSelected)
+            // console.log(itemsSelected)
             const response = await fetch('http://localhost:8082/api/messages',
                 {
                     method: 'PATCH',
@@ -218,7 +209,7 @@ class Toolbar extends React.Component {
                 response: messages
             }
             this.props.dispatch(myAction)
-           
+
         }
     }
 
@@ -256,7 +247,7 @@ class Toolbar extends React.Component {
                 response: messages
             }
             this.props.dispatch(myAction)
-           
+
         }
     }
 
@@ -294,7 +285,7 @@ class Toolbar extends React.Component {
                 response: messages
             }
             this.props.dispatch(myAction)
-            
+
         }
 
     }
@@ -391,92 +382,28 @@ class Toolbar extends React.Component {
 
     // To display the compose form when the red compose button is clicked on the toolbar
     // and close the compose form when the same button is clicked again
-    displayComposeMessageForm = () => {        
-       // console.log(this.props.composeFormVisible)
-        if(this.props.composeFormVisible === false){
+    displayComposeMessageForm = () => {
+        // console.log(this.props.composeFormVisible)
+        if (this.props.composeFormVisible === false) {
             let myAction = {
                 type: "OpenComposeForm",
                 visible: true,
-                form: <ComposeMessageForm 
-                onChangeBody = {this.onChangeBody}
-                onChangeSubject = {this.onChangeSubject}
-                addMessageOnSubmit = {this.addMessageOnSubmit}
-                />,
+                form: <ComposeMessageForm />,
             }
-            this.props.dispatch(myAction)           
-        } else{
+            this.props.dispatch(myAction)
+        } else {
             let action = {
                 type: "CloseComposeForm",
                 visible: false,
                 form: null
             }
             this.props.dispatch(action)
-           
+
         }
 
-    } 
-    
-    // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
-    // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
-    // For this we use event.target.value to grab the value entered in the target.
-    onChangeSubject = (e) => {
-        //console.log("hello")
-        let myAction = {
-            type: "Subject_Value",
-            value: e.target.value
-        }
-        this.props.dispatch(myAction)
     }
 
-    onChangeBody = (e) => {
-        
-        let action = {
-            type: "Body_Value",
-            value: e.target.value
-        }
-        this.props.dispatch(action)
-    }
 
-    // To add a new message to the message list on the UI when the Send button is clicked on the compose form
-    addMessageOnSubmit = async (e) => {
-        e.preventDefault();
-        let subject = this.props.formSubjectValue;
-        let body = this.props.formBodyValue;
-        const response = await fetch('http://localhost:8082/api/messages',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(
-                        {
-                            subject: subject,
-                            body: body,
-                            read: false,
-                            starred: false,
-                            labels: [],
-
-                        })
-                })
-
-            const newMessage = await response.json()
-            let newMessages = this.props.apiResponse.slice();
-            newMessages.push(newMessage)
-            let myAction = {
-                type: "Create_Message",
-                response: newMessages
-            }
-            this.props.dispatch(myAction);
-
-            let action = {
-                type: "CloseComposeForm",
-                visible: false,
-                form: null
-            }
-            this.props.dispatch(action)
-    }
-   
     render() {
         console.log(this)
         return (
@@ -490,12 +417,12 @@ class Toolbar extends React.Component {
                         unread messages
                     </p>
 
-                    <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>             
+                    <a className="btn btn-danger" onClick={this.displayComposeMessageForm}>
                         <i className="fa fa-plus"></i>
                     </a>
 
                     <button className="btn btn-default">
-                        <i className={this.dynamicSelectButtonClassName()} onClick={this.props.areAllMessagesSelected ?  this.handleSelectAll : this.handleDeSelectAll}></i>
+                        <i className={this.dynamicSelectButtonClassName()} onClick={this.props.areAllMessagesSelected ? this.handleSelectAll : this.handleDeSelectAll}></i>
                         <i className ></i>
                     </button>
 
@@ -531,25 +458,23 @@ class Toolbar extends React.Component {
                 <div>
                     <MessageList
                         toggleStarred={this.toggleStarred}
-                        toggleSelected={this.toggleSelected}                  
+                        toggleSelected={this.toggleSelected}
                     />
                 </div>
             </div>
 
         )
     }
-      
+
 }
-    
+
 
 const mapStateToProps = (state) => {
     return {
         apiResponse: state.ApiResponse,
         areAllMessagesSelected: state.areAllMessagesSelected,
         composeFormVisible: state.composeFormReducer.visible,
-        composeForm : state.composeFormReducer.form,
-        formBodyValue : state.formBodyValue,
-        formSubjectValue: state.formSubjectValue
+        composeForm: state.composeFormReducer.form,
     }
 }
 

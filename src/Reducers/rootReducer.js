@@ -2,15 +2,15 @@ import { combineReducers } from "redux";
 import ComposeFormReducer from "./ComposeFormReducer";
 import messageApiResponseReducer from "./messageAPIResponsereducer";
 import selectAllMessagesReducer from './selectAllMessagesReducer'
-import FormSubjectValueReducer from "./FormSubjectValueReducer";
-import FormBodyValueReducer from "./FormBodyValueReducer";
+import FormValuesReducer from './FormValuesReducer';
 
+// We use combineReducers to gather all the reducers and put them under one reducer so we can pass that one reducer to the 
+// createStore() method
 const rootReducer = combineReducers({
     ApiResponse: messageApiResponseReducer,
-    areAllMessagesSelected : selectAllMessagesReducer,
+    areAllMessagesSelected: selectAllMessagesReducer,
     composeFormReducer: ComposeFormReducer,
-    formSubjectValue: FormSubjectValueReducer,
-    formBodyValue: FormBodyValueReducer
+    formValues: FormValuesReducer,
 })
 
 export default rootReducer;
