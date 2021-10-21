@@ -116,7 +116,7 @@ class Toolbar extends React.Component {
     // To select and deselect a message
     toggleSelected = (event) => {
         let id = event.target.id
-        console.log(id)
+       // console.log(id)
 
         let newMessages = [...this.props.apiResponse];
         newMessages[id].selected = !newMessages[id].selected;
@@ -196,75 +196,81 @@ class Toolbar extends React.Component {
         return className;
     }
 
-    // // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
-    // handleRead = async () => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         let itemsSelected = [];
-    //         newMessages.map((message) => {
-    //             if (message.selected === true) {
-    //                 itemsSelected.push(message.id)
-    //             }
-    //         })
-    //         console.log(itemsSelected)
-    //         const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'PATCH',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         messageIds: itemsSelected,
-    //                         command: 'read',
-    //                         read: true,
-    //                     })
-    //             })
+    // To make the message state as 'Read' state when the message is selected and 'Mark As Read' button is clicked on the toolbar
+    handleRead = async () => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.props.apiResponse.slice();
+            let itemsSelected = [];
+            newMessages.map((message) => {
+                if (message.selected === true) {
+                    itemsSelected.push(message.id)
+                }
+            })
+           // console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'read',
+                            read: true,
+                        })
+                })
 
-    //         const messages = await response.json()
-    //         this.setState({
-    //             messageApiResponse: messages
-    //         })
-    //     }
-    // }
+            const messages = await response.json()
+            let myAction = {
+                type: "MarkAsRead",
+                response: messages
+            }
+            this.props.dispatch(myAction)
+           
+        }
+    }
 
-    // // To make the message state as 'Unread' state when the message is selected and 'Mark As Unread' button is clicked on the toolbar
-    // handleUnRead = async () => {
-    //     if (this.totalselectMessages()) {
-    //         this.alertHandle();
-    //     } else {
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         let itemsSelected = [];
-    //         newMessages.map((message) => {
-    //             if (message.selected === true) {
-    //                 itemsSelected.push(message.id)
-    //             }
-    //         })
-    //         console.log(itemsSelected)
-    //         const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'PATCH',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         messageIds: itemsSelected,
-    //                         command: 'read',
-    //                         read: false,
-    //                     })
-    //             })
+    // To make the message state as 'Unread' state when the message is selected and 'Mark As Unread' button is clicked on the toolbar
+    handleUnRead = async () => {
+        if (this.totalselectMessages()) {
+            this.alertHandle();
+        } else {
+            let newMessages = this.props.apiResponse.slice();
+            let itemsSelected = [];
+            newMessages.map((message) => {
+                if (message.selected === true) {
+                    itemsSelected.push(message.id)
+                }
+            })
+            console.log(itemsSelected)
+            const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            messageIds: itemsSelected,
+                            command: 'read',
+                            read: false,
+                        })
+                })
 
-    //         const messages = await response.json()
-    //         this.setState({
-    //             messageApiResponse: messages
-    //         })
-    //     }
-    // }
+            const messages = await response.json()
+            let myAction = {
+                type: "MarkAsUnRead",
+                response: messages
+            }
+            this.props.dispatch(myAction)
+           
+        }
+    }
 
     // // To Delete a selected message/ messages
     // handleDelete = async () => {
@@ -383,10 +389,10 @@ class Toolbar extends React.Component {
     // }
 
 
-    // // To disable all the bottons on the Toolbar when no messages are selected
-    // alertHandle = () => {
-    //     return alert("Please select a message to use the toolbar items");
-    // }
+    // To disable all the bottons on the Toolbar when no messages are selected
+    alertHandle = () => {
+        return alert("Please select a message to use the toolbar items");
+    }
 
     // // To display the compose form when the red compose button is clicked on the toolbar
     // // and close the compose form when the same button is clicked again
@@ -471,13 +477,11 @@ class Toolbar extends React.Component {
                         <i className ></i>
                     </button>
 
-                    {/* <button className="btn btn-default" onClick={this.handleRead}> */}
-                    <button className="btn btn-default" >
+                    <button className="btn btn-default" onClick={this.handleRead}>
                         Mark As Read
                     </button>
 
-                    {/* <button className="btn btn-default" onClick={this.handleUnRead}> */}
-                    <button className="btn btn-default">
+                    <button className="btn btn-default" onClick={this.handleUnRead}>
                         Mark As Unread
                     </button>
 

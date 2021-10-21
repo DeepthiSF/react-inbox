@@ -12,6 +12,7 @@ const Message = (props) => {
           let dynamicClass = "row message"
         if (props.apiResponse[props.index].selected === true && props.apiResponse[props.index].read === true) {
            dynamicClass += " read selected";
+           console.log(dynamicClass)
         } else if (props.apiResponse[props.index].selected === true && props.apiResponse[props.index].read === false) {
             dynamicClass += " unread selected";
         } else if (props.apiResponse[props.index].read === true) {
@@ -22,9 +23,7 @@ const Message = (props) => {
         return dynamicClass;
     }
 
-    console.log(props)
-
-    
+       
 
     
     return (
@@ -61,7 +60,6 @@ const Message = (props) => {
 
 
 }
-
 
 
 const mapStateToProps = (state) => {

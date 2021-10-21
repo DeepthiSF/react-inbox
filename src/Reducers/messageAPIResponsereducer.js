@@ -20,6 +20,14 @@ const messageApiResponseReducer = (state = [], action) => {
              state = action.response;            
              return state;
 
+        case "MarkAsRead":              
+             state = action.response;            
+             return state;
+
+        case "MarkAsUnRead":              
+             state = action.response;            
+             return state;
+
         default:
             return state;
    }  
