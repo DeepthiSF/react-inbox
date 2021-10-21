@@ -7,8 +7,7 @@ const ComposeMessageForm = (props) => {
     return (
         <div>
             {/* // For Forms in react the onSubmit should be declared in the first line where the Form begins */}
-        {/* <form className="form-horizontal well" onSubmit={props.addMessageOnSubmit}> */}
-        <form className="form-horizontal well" >
+        <form className="form-horizontal well" onSubmit={props.addMessageOnSubmit}>
             <div className="form-group">
                 <div className="col-sm-8 col-sm-offset-2">
                     <h4>Compose Message</h4>
@@ -19,8 +18,7 @@ const ComposeMessageForm = (props) => {
                 <div className="col-sm-8">
                     {/* // This onChange method will take the value that is entered in the name 'subject' and will set the state of the subject in Toolbar.js with this entered value.
                     so we can use that value from the this.state.subject to pass it to our POST method */}
-                    {/* <input type="text" className="form-control" id="subject" placeholder="Enter a subject" onChange={props.onChange} name="subject" /> */}
-                    <input type="text" className="form-control" id="subject" placeholder="Enter a subject" name="subject" />
+                    <input type="text" className="form-control" id="subject" placeholder="Enter a subject" onChange={props.onChangeSubject} name="subject" />
                 </div>
             </div>
             <div className="form-group">
@@ -28,8 +26,7 @@ const ComposeMessageForm = (props) => {
                 <div className="col-sm-8">
                      {/* // This onChange method will take the value that is entered in the name 'body' and will set the state of the body in Toolbar.js with this entered value.
                     so we can use that value from the this.state.body to pass it to our POST method */}
-                    {/* <textarea name="body" id="body" className="form-control" onChange={props.onChange}></textarea> */}
-                    <textarea name="body" id="body" className="form-control" ></textarea>
+                    <textarea name="body" id="body" className="form-control" onChange={props.onChangeBody}></textarea>
                 </div>
             </div>
             <div className="form-group">

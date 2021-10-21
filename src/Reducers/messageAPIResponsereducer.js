@@ -40,6 +40,10 @@ const messageApiResponseReducer = (state = [], action) => {
              state = action.response;            
              return state;
 
+        case "Create_Message":              
+             state = action.response;            
+             return state;
+
         default:
             return state;
    }  

@@ -411,8 +411,9 @@ class Toolbar extends React.Component {
                 type: "OpenComposeForm",
                 visible: true,
                 form: <ComposeMessageForm 
-                // onChange = {this.onChange}
-                // addMessageOnSubmit = {this.addMessageOnSubmit}
+                onChangeBody = {this.onChangeBody}
+                onChangeSubject = {this.onChangeSubject}
+                addMessageOnSubmit = {this.addMessageOnSubmit}
                 />,
             }
             this.props.dispatch(myAction)           
@@ -428,46 +429,68 @@ class Toolbar extends React.Component {
 
     } 
     
-    // // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
-    // // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
-    // // For this we use event.target.value to grab the value entered in the target.
-    // onChange = (e) => {
-    //     console.log("hello")
-    //     this.setState({[e.target.name]: e.target.value})
-    // }
+    // To handle the change happening in the input type text forms. Which means when someone starts typing in the text box that means a change is happening in that text box
+    // and we need to handle that change by grabbing the text values entered in the text box and setting the state of that text box name with the value entered.
+    // For this we use event.target.value to grab the value entered in the target.
+    onChangeSubject = (e) => {
+        //console.log("hello")
+        let myAction = {
+            type: "Subject_Value",
+            value: e.target.value
+        }
+        this.props.dispatch(myAction)
+        //this.setState({[e.target.name]: e.target.value})
+    }
 
-    // // To add a new message to the message list on the UI when the Send button is clicked on the compose form
-    // addMessageOnSubmit = async (e) => {
-    //     e.preventDefault();
-    //     let subject = this.state.subject;
-    //     let body = this.state.body;
-    //     const response = await fetch('http://localhost:8082/api/messages',
-    //             {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Accept': 'application/json',
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(
-    //                     {
-    //                         subject: subject,
-    //                         body: body,
-    //                         read: false,
-    //                         starred: false,
-    //                         labels: ["dev"],
+    onChangeBody = (e) => {
+        
+        let action = {
+            type: "Body_Value",
+            value: e.target.value
+        }
+        this.props.dispatch(action)
+        //this.setState({[e.target.name]: e.target.value})
+    }
 
-    //                     })
-    //             })
+    // To add a new message to the message list on the UI when the Send button is clicked on the compose form
+    addMessageOnSubmit = async (e) => {
+        e.preventDefault();
+        let subject = this.props.formSubjectValue;
+        let body = this.props.formBodyValue;
+        const response = await fetch('http://localhost:8082/api/messages',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                        {
+                            subject: subject,
+                            body: body,
+                            read: false,
+                            starred: false,
+                            labels: [],
 
-    //         const newMessage = await response.json()
-    //         let newMessages = this.state.messageApiResponse.slice();
-    //         newMessages.push(newMessage)
-    //         this.setState({
-    //             messageApiResponse: newMessages,
-    //             composeMessageForm: null,
-    //             composeFormVisible: false,
-    //         })
-    // }
+                        })
+                })
+
+            const newMessage = await response.json()
+            let newMessages = this.props.apiResponse.slice();
+            newMessages.push(newMessage)
+            let myAction = {
+                type: "Create_Message",
+                response: newMessages
+            }
+            this.props.dispatch(myAction);
+
+            let action = {
+                type: "CloseComposeForm",
+                visible: false,
+                form: null
+            }
+            this.props.dispatch(action)
+    }
    
     render() {
         console.log(this)
@@ -540,7 +563,9 @@ const mapStateToProps = (state) => {
         apiResponse: state.ApiResponse,
         areAllMessagesSelected: state.areAllMessagesSelected,
         composeFormVisible: state.composeFormReducer.visible,
-        composeForm : state.composeFormReducer.form
+        composeForm : state.composeFormReducer.form,
+        formBodyValue : state.formBodyValue,
+        formSubjectValue: state.formSubjectValue
     }
 }
 
