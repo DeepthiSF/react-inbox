@@ -1,4 +1,4 @@
-const selectAllMessagesReducer = (state = false, action) => {
+const selectAllMessagesReducer = (state = true, action) => {
         switch(action.type){
             case "AllMessagesSelected":
                 state = action.response;

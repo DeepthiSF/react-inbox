@@ -39,16 +39,16 @@ class Toolbar extends React.Component {
 
     }
 
-    // To check if all the messages are selected or not
-    selectState = () => {
+    // // To check if all the messages are selected or not
+    // selectState = () => {
 
-        let selectValues = this.props.apiResponse.map((message) => {
-            return message.selected
-        })
-        let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
+    //     let selectValues = this.props.apiResponse.map((message) => {
+    //         return message.selected
+    //     })
+    //     let allSelectedIsTrue = selectValues.every((value) => { return value === 'true' })
 
-        return allSelectedIsTrue;
-    }
+    //     return allSelectedIsTrue;
+    // }
 
     // To check if no messages are selected
     totalselectMessages = () => {
@@ -69,7 +69,6 @@ class Toolbar extends React.Component {
     // To check how many messages are unread 
     unreadMessageCount = () => {
 
-        //console.log(this.state.messageApiResponse)
         let newMessages = this.props.apiResponse.slice();
         let unreadMessages = newMessages.filter((message) => {
             return message.read === false
@@ -139,42 +138,41 @@ class Toolbar extends React.Component {
 
         })
 
-       // this.finalSelectState = true;
         let myAction = {
             type: "SelectAll_Messages",
             response: newMessages
         }
         this.props.dispatch(myAction)
 
-        let action = {
+        let selectAction = {
             type: "AllMessagesSelected",
-            response: true
+            response: false
         }
-        this.props.dispatch(action)
+        this.props.dispatch(selectAction)
         
 
     }
 
     // To De-select all the messages using the Select All button in the Toolbar
     handleDeSelectAll = () => {
-        console.log("I am in DE select ALL")
+        
         let newMessages = [...this.props.apiResponse];
 
         newMessages = newMessages.map((message) => {
             return { ...message, selected: false }
         })
 
-       // this.finalSelectState = false;
-       let myAction = {
+        let myAction = {
         type: "DeSelectAll_Messages",
         response: newMessages
        }
-
-       let action = {
+       this.props.dispatch(myAction)
+     
+       let deSelectAction = {
         type: "AllMessagesDeSelected",
-        response: false
+        response: true
        }
-       this.props.dispatch(action)
+       this.props.dispatch(deSelectAction)
         
 
     }
@@ -469,7 +467,7 @@ class Toolbar extends React.Component {
                     </a>
 
                     <button className="btn btn-default">
-                        <i className={this.dynamicSelectButtonClassName()} onClick={this.props.areAllMessagesSelected ? this.handleDeSelectAll : this.handleSelectAll}></i>
+                        <i className={this.dynamicSelectButtonClassName()} onClick={this.props.areAllMessagesSelected ?  this.handleSelectAll : this.handleDeSelectAll}></i>
                         <i className ></i>
                     </button>
 
